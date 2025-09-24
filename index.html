@@ -129,10 +129,32 @@
             </div>
 
             <label for="signup-password" class="label">Senha</label>
-            <input id="signup-password" class="input" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required />
+            <div class="password-wrap">
+              <input id="signup-password" class="input" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required />
+              <button type="button" class="icon-btn toggle-password" data-target="signup-password" aria-label="Mostrar senha" aria-pressed="false">
+                <!-- Ícone olho (visível quando a senha está oculta) -->
+                <svg class="eye on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 13c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                <!-- Ícone olho-riscado (visível quando a senha está sendo mostrada) -->
+                <svg class="eye off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 6c5 0 9.27 3.11 11 7.5-.58 1.51-1.55 2.85-2.78 3.94l1.42 1.42-1.41 1.41-18-18 1.41-1.41 3.2 3.2C8.36 6.35 10.12 6 12 6zM4.1 7.27l2.09 2.09C4.6 10.38 3.33 11.82 3 12.5 4.73 16.89 9 20 14 20c1.98 0 3.83-.41 5.47-1.13l1.63 1.63-1.41 1.41-18-18 1.41-1.41zM9.9 13.07l1.53 1.53a3.99 3.99 0 01-1.53-1.53zM12 8c-1.1 0-2 .9-2 2 0 .37.1.71.27 1.01l2.74 2.74c.3.17.64.27 1 .27 1.1 0 2-.9 2-2 0-.36-.1-.7-.27-1L13 8.27C12.7 8.1 12.36 8 12 8z"/>
+                </svg>
+              </button>
+            </div>
 
             <label for="signup-confirm" class="label">Confirmar senha</label>
-            <input id="signup-confirm" class="input" type="password" autocomplete="new-password" placeholder="Repita sua senha" required />
+            <div class="password-wrap">
+              <input id="signup-confirm" class="input" type="password" autocomplete="new-password" placeholder="Repita sua senha" required />
+              <button type="button" class="icon-btn toggle-password" data-target="signup-confirm" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="eye on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 13c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                <svg class="eye off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 6c5 0 9.27 3.11 11 7.5-.58 1.51-1.55 2.85-2.78 3.94l1.42 1.42-1.41 1.41-18-18 1.41-1.41 3.2 3.2C8.36 6.35 10.12 6 12 6zM4.1 7.27l2.09 2.09C4.6 10.38 3.33 11.82 3 12.5 4.73 16.89 9 20 14 20c1.98 0 3.83-.41 5.47-1.13l1.63 1.63-1.41 1.41-18-18 1.41-1.41zM9.9 13.07l1.53 1.53a3.99 3.99 0 01-1.53-1.53zM12 8c-1.1 0-2 .9-2 2 0 .37.1.71.27 1.01l2.74 2.74c.3.17.64.27 1 .27 1.1 0 2-.9 2-2 0-.36-.1-.7-.27-1L13 8.27C12.7 8.1 12.36 8 12 8z"/>
+                </svg>
+              </button>
+            </div>
 
             <label class="label">
               <input id="signup-terms" type="checkbox" /> Eu li e aceito os Termos de Uso

@@ -313,5 +313,28 @@
       switchToLogin();
     });
   }
+
+  /* ==========================
+     Toggle de visibilidade de senha
+     ========================== */
+  function setupPasswordToggles() {
+    const toggles = document.querySelectorAll('.toggle-password');
+    toggles.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        const input = document.getElementById(targetId);
+        if (!input) return;
+
+        const isHidden = input.getAttribute('type') === 'password';
+        input.setAttribute('type', isHidden ? 'text' : 'password');
+        // aria-pressed = true quando está mostrando (texto visível)
+        btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        btn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
+      });
+    });
+  }
+
+  setupPasswordToggles();
 })();
 

@@ -246,6 +246,36 @@ input[type="checkbox"] {
   color: var(--color-text-dim);
 }
 
+/* Campo de senha com botão de visibilidade */
+.password-wrap {
+  position: relative;
+}
+
+.icon-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-text-dim);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.icon-btn:hover { color: var(--color-text); }
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Mostra apenas um dos ícones conforme o estado */
+.eye.off { display: none; }
+.icon-btn[aria-pressed="true"] .eye.on { display: none; }
+.icon-btn[aria-pressed="true"] .eye.off { display: inline; }
+
 /* Responsividade simples: em telas maiores, ampliamos um pouco o título */
 @media (min-width: 480px) {
   .title { font-size: 24px; }
