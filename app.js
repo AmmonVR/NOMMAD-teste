@@ -18,7 +18,6 @@ function initAuthScreen() {
   const yearEl = document.getElementById('year');
   const titleEl = document.querySelector('[data-mode-text]');
   const authSection = document.getElementById('auth-section');
-  const authSection = document.getElementById('auth-section');
   const googleBtn = document.getElementById('google-button');
   const googleBtnText = document.getElementById('google-button-text');
   const formEl = document.getElementById('auth-form');
