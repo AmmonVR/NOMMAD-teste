@@ -172,6 +172,88 @@
         </div>
       </section>
 
+      <!-- HOME VIEW (aplicativo após login) -->
+      <section id="home-view" class="home hidden" aria-hidden="true" role="region" aria-labelledby="home-title">
+        <h1 id="home-title" class="sr-only">Início</h1>
+
+        <!-- Tabs superiores -->
+        <div class="tabs" role="tablist" aria-label="Navegação superior">
+          <button id="tab-services-btn" class="tab active" role="tab" aria-selected="true" aria-controls="tab-services">🛠 Serviços</button>
+          <button id="tab-requests-btn" class="tab" role="tab" aria-selected="false" aria-controls="tab-requests">Solicitações</button>
+        </div>
+
+        <!-- Barra de busca e histórico -->
+        <div class="search-section">
+          <form id="search-form" class="search-form" role="search" aria-label="Pesquisar">
+            <input id="search-input" class="search-input" type="search" inputmode="search" placeholder="Pesquisar prestadores de serviços..." aria-label="Pesquisar prestadores de serviços" />
+          </form>
+          <div class="search-history" id="search-history" aria-live="polite"></div>
+        </div>
+
+        <!-- Painéis das tabs -->
+        <div id="tab-services" class="tab-panel" role="tabpanel" aria-labelledby="tab-services-btn">
+          <div class="section-header">
+            <h2 class="section-title">Sugestões</h2>
+          </div>
+          <div id="suggestions-carousel" class="carousel" aria-label="Sugestões de serviços" tabindex="0">
+            <!-- Itens do carrossel: emoji + nome -->
+            <button class="suggestion-card" type="button"><span class="emoji">🧹</span><span class="label">Limpeza Doméstica</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🌿</span><span class="label">Serviços de Jardineiro</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🪚</span><span class="label">Montagem/Desmontagem</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🔧</span><span class="label">Marido de Aluguel</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🎨</span><span class="label">Pintura</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🚽</span><span class="label">Desentupimento</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💡</span><span class="label">Eletricista</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💧</span><span class="label">Encanador</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🪳</span><span class="label">Controle de Pragas</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💈</span><span class="label">Cabelo/Barba</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💅</span><span class="label">Manicure/Pedicure</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🏋️‍♂️</span><span class="label">Personal Trainer</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💄</span><span class="label">Maquiagem</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🚗</span><span class="label">Automotivos</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">⚙️</span><span class="label">Mecânico</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🚗💦</span><span class="label">Lavagem a Seco</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🐕</span><span class="label">Adestrador</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">📸</span><span class="label">Fotógrafo</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🏊‍♂️</span><span class="label">Limpeza de Piscinas</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🛋️</span><span class="label">Limpeza de Sofá</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">💻</span><span class="label">Programador</span></button>
+            <button class="suggestion-card" type="button"><span class="emoji">🧱</span><span class="label">Pedreiro</span></button>
+          </div>
+
+          <!-- Card de recrutamento -->
+          <div class="recruit-card" role="note">
+            <p>Tem alguma habilidade, talento ou negócio? venha se tornar um <strong class="brand">NÔMMAD</strong>.</p>
+          </div>
+        </div>
+
+        <div id="tab-requests" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-requests-btn" aria-hidden="true">
+          <div class="empty">
+            <p>Você ainda não tem solicitações.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navegação inferior -->
+      <nav id="bottom-nav" class="navbar hidden" aria-hidden="true" aria-label="Navegação inferior">
+        <button class="nav-item active" type="button" aria-current="page">
+          <span class="nav-emoji">🏠</span>
+          <span class="nav-label">Início</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-emoji">📨</span>
+          <span class="nav-label">Propostas</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-emoji">💬</span>
+          <span class="nav-label">Chat</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-emoji">👤</span>
+          <span class="nav-label">Perfil</span>
+        </button>
+      </nav>
+
       <!-- Rodapé simples com direitos autorais -->
       <footer class="footer">
         <small>© <span id="year"></span> NOMMAD. Todos os direitos reservados.</small>

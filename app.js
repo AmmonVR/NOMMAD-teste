@@ -42,6 +42,17 @@
   const signupTerms = document.getElementById('signup-terms');
   const signupHelp = document.getElementById('signup-help');
 
+  // HOME
+  const homeView = document.getElementById('home-view');
+  const bottomNav = document.getElementById('bottom-nav');
+  const tabServicesBtn = document.getElementById('tab-services-btn');
+  const tabRequestsBtn = document.getElementById('tab-requests-btn');
+  const tabServices = document.getElementById('tab-services');
+  const tabRequests = document.getElementById('tab-requests');
+  const searchForm = document.getElementById('search-form');
+  const searchInput = document.getElementById('search-input');
+  const searchHistory = document.getElementById('search-history');
+
   // Estado simples para saber se estamos no modo "login" ou "cadastro".
   // Começamos no modo "login" (poderia ser configurável).
   let mode = 'login'; // valores possíveis: 'login' | 'signup'
@@ -60,12 +71,16 @@
       if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
       setHidden(loginView, false);
       setHidden(signupView, true);
+      setHidden(homeView, true);
+      setHidden(bottomNav, true);
     } else {
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
       if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
       setHidden(loginView, true);
       setHidden(signupView, false);
+      setHidden(homeView, true);
+      setHidden(bottomNav, true);
     }
   }
 
@@ -178,6 +193,9 @@
       const fullPhone = `${result.code}${result.number}`;
       if (mode === 'login') {
         alert(`Login: vamos verificar o telefone ${fullPhone} (simulação).`);
+        // Simulação: após login OK, mostrar Home
+        showHome();
+        return;
       } else {
         alert(`Cadastro: vamos verificar o telefone ${fullPhone} (simulação).`);
       }
@@ -336,5 +354,68 @@
   }
 
   setupPasswordToggles();
+
+  /* =====================
+     HOME — navegação e busca
+     ===================== */
+  function showHome() {
+    // Oculta auth e exibe Home + navbar
+    setHidden(loginView, true);
+    setHidden(signupView, true);
+    setHidden(homeView, false);
+    setHidden(bottomNav, false);
+    // foca na busca para UX rápida
+    setTimeout(() => searchInput?.focus(), 0);
+  }
+
+  function activateTab(tab) {
+    if (tab === 'services') {
+      tabServicesBtn?.classList.add('active');
+      tabRequestsBtn?.classList.remove('active');
+      tabServices?.classList.remove('hidden');
+      tabServices?.setAttribute('aria-hidden', 'false');
+      tabRequests?.classList.add('hidden');
+      tabRequests?.setAttribute('aria-hidden', 'true');
+    } else {
+      tabServicesBtn?.classList.remove('active');
+      tabRequestsBtn?.classList.add('active');
+      tabServices?.classList.add('hidden');
+      tabServices?.setAttribute('aria-hidden', 'true');
+      tabRequests?.classList.remove('hidden');
+      tabRequests?.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  tabServicesBtn?.addEventListener('click', () => activateTab('services'));
+  tabRequestsBtn?.addEventListener('click', () => activateTab('requests'));
+
+  // Histórico de busca simples (em memória)
+  const recentSearches = [];
+  function renderSearchHistory() {
+    if (!searchHistory) return;
+    searchHistory.innerHTML = '';
+    recentSearches.slice(-6).reverse().forEach((term) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'search-chip';
+      chip.textContent = term;
+      chip.addEventListener('click', () => {
+        searchInput.value = term;
+      });
+      searchHistory.appendChild(chip);
+    });
+  }
+
+  searchForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const term = String(searchInput?.value || '').trim();
+    if (!term) return;
+    recentSearches.push(term);
+    renderSearchHistory();
+    // Futuro: navegar para lista de resultados
+  });
+
+  // Exemplo: se quiser abrir a Home direto para visualização agora, descomente:
+  // showHome();
 })();
 
