@@ -102,17 +102,18 @@ function initAuthScreen() {
   }
 
   // Conectamos os botões de alternância aos manipuladores acima.
-  if (toSignupBtn) toSignupBtn.addEventListener('click', (e) => { e.preventDefault(); switchToSignup(); });
-  if (backToLoginBtn) backToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); switchToLogin(); });
+  if (toSignupBtn) toSignupBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); switchToSignup(); });
+  if (backToLoginBtn) backToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); switchToLogin(); });
 
   // Delegação extra (robustez para ambientes como CodePen)
   document.addEventListener('click', (e) => {
     const target = e.target;
     if (!target) return;
-    const signupTrigger = target.id === 'to-signup' || target.closest?.('#to-signup');
-    const backTrigger = target.id === 'back-to-login' || target.closest?.('#back-to-login');
-    if (signupTrigger) { e.preventDefault(); switchToSignup(); }
-    if (backTrigger) { e.preventDefault(); switchToLogin(); }
+    const el = target.closest ? target.closest('[data-action]') : null;
+    if (!el) return;
+    const action = el.getAttribute('data-action');
+    if (action === 'to-signup') { e.preventDefault(); e.stopPropagation(); switchToSignup(); }
+    if (action === 'back-login') { e.preventDefault(); e.stopPropagation(); switchToLogin(); }
   });
 
   // Utilitário: esconde/mostra uma seção e atualiza aria-hidden

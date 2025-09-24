@@ -56,7 +56,7 @@
         <!-- LOGIN VIEW -->
         <div id="login-view">
           <!-- Campo de telefone com código do país (ex: +55) -->
-          <form id="auth-form" class="form" novalidate>
+          <form id="auth-form" class="form" novalidate action="javascript:void(0)">
             <!-- Rótulo acessível para leitores de tela -->
             <label for="phone" class="label">Número de telefone</label>
             <!-- Input do telefone: type=tel ajuda em teclados móveis -->
@@ -93,13 +93,13 @@
 
           <!-- Link para alternar para o cadastro -->
           <div class="switcher">
-            <button id="to-signup" class="link" type="button">Não tem uma conta? Cadastre-se</button>
+            <button id="to-signup" class="link" type="button" data-action="to-signup">Não tem uma conta? Cadastre-se</button>
           </div>
         </div>
 
         <!-- SIGNUP VIEW (inicialmente escondida) -->
         <div id="signup-view" class="hidden" aria-hidden="true">
-          <form id="signup-form" class="form" novalidate>
+          <form id="signup-form" class="form" novalidate action="javascript:void(0)">
             <label for="signup-name" class="label">Nome completo</label>
             <input id="signup-name" class="input" type="text" autocomplete="name" placeholder="Seu nome" required />
 
@@ -167,7 +167,7 @@
           </form>
 
           <div class="switcher">
-            <button id="back-to-login" class="link" type="button">Voltar para o login</button>
+            <button id="back-to-login" class="link" type="button" data-action="back-login">Voltar para o login</button>
           </div>
         </div>
       </section>
