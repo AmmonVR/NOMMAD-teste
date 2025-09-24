@@ -102,8 +102,18 @@ function initAuthScreen() {
   }
 
   // Conectamos os botões de alternância aos manipuladores acima.
-  if (toSignupBtn) toSignupBtn.addEventListener('click', switchToSignup);
-  if (backToLoginBtn) backToLoginBtn.addEventListener('click', switchToLogin);
+  if (toSignupBtn) toSignupBtn.addEventListener('click', (e) => { e.preventDefault(); switchToSignup(); });
+  if (backToLoginBtn) backToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); switchToLogin(); });
+
+  // Delegação extra (robustez para ambientes como CodePen)
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!target) return;
+    const signupTrigger = target.id === 'to-signup' || target.closest?.('#to-signup');
+    const backTrigger = target.id === 'back-to-login' || target.closest?.('#back-to-login');
+    if (signupTrigger) { e.preventDefault(); switchToSignup(); }
+    if (backTrigger) { e.preventDefault(); switchToLogin(); }
+  });
 
   // Utilitário: esconde/mostra uma seção e atualiza aria-hidden
   function setHidden(element, hidden) {
