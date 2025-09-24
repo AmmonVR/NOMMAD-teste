@@ -111,12 +111,12 @@ body {
 }
 
 .google-icon {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 18px;
+  flex: 0 0 22px;
 }
 
 .google-icon svg {
@@ -124,6 +124,9 @@ body {
   height: 100%;
   display: block;
 }
+
+/* Opcional: modo monocromático (usa a mesma cor do texto) */
+.google-icon.mono svg [fill] { fill: currentColor !important; }
 
 .btn-primary {
   background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-blue));
