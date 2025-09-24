@@ -77,6 +77,9 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* Utilitário para esconder seções (signup/login) sem remover do fluxo de acessibilidade */
+.hidden { display: none; }
+
 .title {
   margin: 0 0 var(--space-6) 0;
   font-size: 22px;
@@ -224,6 +227,15 @@ body {
 
 .link:hover {
   color: var(--color-text);
+}
+
+/* Checkbox e labels do cadastro */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  accent-color: var(--color-accent-blue);
+  margin-right: 8px;
 }
 
 .footer {

@@ -52,45 +52,100 @@
           <span class="line"></span>
         </div>
 
-        <!-- Campo de telefone com código do país (ex: +55) -->
-        <form id="auth-form" class="form" novalidate>
-          <!-- Rótulo acessível para leitores de tela -->
-          <label for="phone" class="label">Número de telefone</label>
-          <!-- Input do telefone: type=tel ajuda em teclados móveis -->
-          <div class="phone-input">
-            <input
-              id="country-code"
-              class="input code"
-              type="tel"
-              inputmode="tel"
-              autocomplete="tel-country-code"
-              aria-label="Código do país"
-              value="+55"
-              required
-            />
-            <input
-              id="phone"
-              class="input number"
-              type="tel"
-              inputmode="tel"
-              autocomplete="tel"
-              placeholder="Seu número"
-              aria-describedby="phone-help"
-              required
-            />
+        <!-- LOGIN VIEW -->
+        <div id="login-view">
+          <!-- Campo de telefone com código do país (ex: +55) -->
+          <form id="auth-form" class="form" novalidate>
+            <!-- Rótulo acessível para leitores de tela -->
+            <label for="phone" class="label">Número de telefone</label>
+            <!-- Input do telefone: type=tel ajuda em teclados móveis -->
+            <div class="phone-input">
+              <input
+                id="country-code"
+                class="input code"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-country-code"
+                aria-label="Código do país"
+                value="+55"
+                required
+              />
+              <input
+                id="phone"
+                class="input number"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="Seu número"
+                aria-describedby="phone-help"
+                required
+              />
+            </div>
+            <!-- Mensagem de ajuda/erro do telefone -->
+            <div id="phone-help" class="help" aria-live="polite"></div>
+
+            <!-- Botão principal que avança para a próxima etapa -->
+            <button id="continue" class="btn btn-primary" type="submit">
+              Continuar
+            </button>
+          </form>
+
+          <!-- Link para alternar para o cadastro -->
+          <div class="switcher">
+            <button id="to-signup" class="link" type="button">Não tem uma conta? Cadastre-se</button>
           </div>
-          <!-- Mensagem de ajuda/erro do telefone -->
-          <div id="phone-help" class="help" aria-live="polite"></div>
+        </div>
 
-          <!-- Botão principal que avança para a próxima etapa -->
-          <button id="continue" class="btn btn-primary" type="submit">
-            Continuar
-          </button>
-        </form>
+        <!-- SIGNUP VIEW (inicialmente escondida) -->
+        <div id="signup-view" class="hidden" aria-hidden="true">
+          <form id="signup-form" class="form" novalidate>
+            <label for="signup-name" class="label">Nome completo</label>
+            <input id="signup-name" class="input" type="text" autocomplete="name" placeholder="Seu nome" required />
 
-        <!-- Links para alternar entre login e cadastro -->
-        <div class="switcher">
-          <button id="to-signup" class="link" type="button">Não tem uma conta? Cadastre-se</button>
+            <label for="signup-email" class="label">Email</label>
+            <input id="signup-email" class="input" type="email" autocomplete="email" placeholder="seu@email.com" required />
+
+            <label for="signup-phone" class="label">Número de telefone</label>
+            <div class="phone-input">
+              <input
+                id="signup-country-code"
+                class="input code"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-country-code"
+                aria-label="Código do país"
+                value="+55"
+                required
+              />
+              <input
+                id="signup-phone"
+                class="input number"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="Seu número"
+                required
+              />
+            </div>
+
+            <label for="signup-password" class="label">Senha</label>
+            <input id="signup-password" class="input" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required />
+
+            <label for="signup-confirm" class="label">Confirmar senha</label>
+            <input id="signup-confirm" class="input" type="password" autocomplete="new-password" placeholder="Repita sua senha" required />
+
+            <label class="label">
+              <input id="signup-terms" type="checkbox" /> Eu li e aceito os Termos de Uso
+            </label>
+
+            <div id="signup-help" class="help" aria-live="polite"></div>
+
+            <button id="signup-continue" class="btn btn-primary" type="submit">Continuar</button>
+          </form>
+
+          <div class="switcher">
+            <button id="back-to-login" class="link" type="button">Voltar para o login</button>
+          </div>
         </div>
       </section>
 

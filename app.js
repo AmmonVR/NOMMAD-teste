@@ -23,8 +23,23 @@
   const phoneInput = document.getElementById('phone');
   const helpEl = document.getElementById('phone-help');
   const continueBtn = document.getElementById('continue');
-  const toLoginBtn = document.getElementById('to-login');
   const toSignupBtn = document.getElementById('to-signup');
+
+  // Elementos da VIEW de alternância (login/cadastro)
+  const loginView = document.getElementById('login-view');
+  const signupView = document.getElementById('signup-view');
+  const backToLoginBtn = document.getElementById('back-to-login');
+
+  // Elementos do formulário de cadastro
+  const signupForm = document.getElementById('signup-form');
+  const signupName = document.getElementById('signup-name');
+  const signupEmail = document.getElementById('signup-email');
+  const signupCountryCode = document.getElementById('signup-country-code');
+  const signupPhone = document.getElementById('signup-phone');
+  const signupPassword = document.getElementById('signup-password');
+  const signupConfirm = document.getElementById('signup-confirm');
+  const signupTerms = document.getElementById('signup-terms');
+  const signupHelp = document.getElementById('signup-help');
 
   // Estado simples para saber se estamos no modo "login" ou "cadastro".
   // Começamos no modo "login" (poderia ser configurável).
@@ -41,9 +56,13 @@
     if (mode === 'login') {
       titleEl.textContent = 'Bem-vindo(a) de volta';
       continueBtn.textContent = 'Continuar';
+      setHidden(loginView, false);
+      setHidden(signupView, true);
     } else {
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
+      setHidden(loginView, true);
+      setHidden(signupView, false);
     }
   }
 
@@ -61,8 +80,20 @@
   }
 
   // Conectamos os botões de alternância aos manipuladores acima.
-  if (toLoginBtn) toLoginBtn.addEventListener('click', switchToLogin);
   if (toSignupBtn) toSignupBtn.addEventListener('click', switchToSignup);
+  if (backToLoginBtn) backToLoginBtn.addEventListener('click', switchToLogin);
+
+  // Utilitário: esconde/mostra uma seção e atualiza aria-hidden
+  function setHidden(element, hidden) {
+    if (!element) return;
+    if (hidden) {
+      element.classList.add('hidden');
+      element.setAttribute('aria-hidden', 'true');
+    } else {
+      element.classList.remove('hidden');
+      element.setAttribute('aria-hidden', 'false');
+    }
+  }
 
   // Validação simples do telefone. Nosso objetivo é garantir que:
   // - o código do país comece com "+" e tenha de 2 a 4 dígitos em seguida (ex.: +55, +351)
@@ -90,6 +121,15 @@
     if (helpEl) helpEl.textContent = '';
     phoneInput?.setAttribute('aria-invalid', 'false');
     countryCodeInput?.setAttribute('aria-invalid', 'false');
+
+    // Limpa mensagens/estados do cadastro também
+    if (signupHelp) signupHelp.textContent = '';
+    signupName?.setAttribute('aria-invalid', 'false');
+    signupEmail?.setAttribute('aria-invalid', 'false');
+    signupCountryCode?.setAttribute('aria-invalid', 'false');
+    signupPhone?.setAttribute('aria-invalid', 'false');
+    signupPassword?.setAttribute('aria-invalid', 'false');
+    signupConfirm?.setAttribute('aria-invalid', 'false');
   }
 
   // Mostra uma mensagem de erro amigável
@@ -171,5 +211,104 @@
 
   // Inicializa a UI com o modo padrão.
   renderByMode();
+
+  /* =====================
+     CADASTRO — validações
+     ===================== */
+
+  // Validação de email simples (formato básico)
+  function validateEmail(emailRaw) {
+    const email = String(emailRaw || '').trim();
+    const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    return { valid: ok, email };
+  }
+
+  // Regras de senha: pelo menos 8 caracteres (pode evoluir depois)
+  function validatePassword(passwordRaw) {
+    const password = String(passwordRaw || '');
+    const ok = password.length >= 8;
+    return { valid: ok, password };
+  }
+
+  function validatePasswordConfirm(passwordRaw, confirmRaw) {
+    const password = String(passwordRaw || '');
+    const confirm = String(confirmRaw || '');
+    return { valid: password === confirm, confirm };
+  }
+
+  // Exibe mensagens de erro do cadastro
+  function showSignupError(messages) {
+    if (signupHelp) signupHelp.textContent = messages.join(' ');
+  }
+
+  // Sanitização dos campos de telefone no cadastro
+  signupCountryCode?.addEventListener('input', () => {
+    signupCountryCode.value = sanitizeCountryCode(signupCountryCode.value);
+    clearErrors();
+  });
+  signupPhone?.addEventListener('input', () => {
+    signupPhone.value = sanitizePhone(signupPhone.value);
+    clearErrors();
+  });
+
+  // Submit do formulário de cadastro
+  if (signupForm) {
+    signupForm.addEventListener('submit', function onSignupSubmit(event) {
+      event.preventDefault();
+      clearErrors();
+
+      const errors = [];
+
+      // Nome: pedimos algo não vazio e com tamanho mínimo
+      const nameValue = String(signupName?.value || '').trim();
+      if (nameValue.length < 3) {
+        errors.push('Informe seu nome completo.');
+        signupName?.setAttribute('aria-invalid', 'true');
+      }
+
+      // Email
+      const emailResult = validateEmail(signupEmail?.value);
+      if (!emailResult.valid) {
+        errors.push('Use um email válido.');
+        signupEmail?.setAttribute('aria-invalid', 'true');
+      }
+
+      // Telefone (usa a mesma validação do login)
+      const phoneResult = validatePhoneParts(signupCountryCode?.value, signupPhone?.value);
+      if (!phoneResult.valid) {
+        errors.push('Informe um telefone válido (ex.: +55 e 7–12 dígitos).');
+        signupCountryCode?.setAttribute('aria-invalid', 'true');
+        signupPhone?.setAttribute('aria-invalid', 'true');
+      }
+
+      // Senha e confirmação
+      const passResult = validatePassword(signupPassword?.value);
+      if (!passResult.valid) {
+        errors.push('Senha deve ter pelo menos 8 caracteres.');
+        signupPassword?.setAttribute('aria-invalid', 'true');
+      }
+      const confirmResult = validatePasswordConfirm(signupPassword?.value, signupConfirm?.value);
+      if (!confirmResult.valid) {
+        errors.push('As senhas não conferem.');
+        signupConfirm?.setAttribute('aria-invalid', 'true');
+      }
+
+      // Termos
+      if (!signupTerms?.checked) {
+        errors.push('Você precisa aceitar os Termos de Uso.');
+      }
+
+      if (errors.length > 0) {
+        showSignupError(errors);
+        return;
+      }
+
+      // Tudo OK: simulamos próxima etapa (ex.: envio de código/verificação)
+      const fullSignupPhone = `${phoneResult.code}${phoneResult.number}`;
+      alert(`Cadastro criado! Vamos verificar ${fullSignupPhone} (simulação).`);
+      // Após cadastro, podemos opcionalmente voltar para o login
+      switchToLogin();
+    });
+  }
 })();
 
