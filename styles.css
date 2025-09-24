@@ -129,9 +129,9 @@ body {
 .google-icon.mono svg [fill] { fill: currentColor !important; }
 
 .btn-primary {
-  background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-blue));
+  background: linear-gradient(90deg, #ffe556, #00bcf0);
   color: #0d0d0d;
-  box-shadow: 0 4px 14px rgba(0, 195, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 188, 240, 0.25);
 }
 
 .btn-primary:hover {
