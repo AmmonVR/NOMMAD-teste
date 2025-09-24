@@ -61,7 +61,7 @@ body {
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 50px;
   font-weight: 700;
   letter-spacing: 2px;
   font-family: 'Cherry Bomb One', cursive;
@@ -175,7 +175,7 @@ body {
 
 .phone-input {
   display: grid;
-  grid-template-columns: 100px 1fr; /* campo do código e do número */
+  grid-template-columns: 55px 1fr; /* campo do código e do número */
   gap: var(--space-3);
 }
 
