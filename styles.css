@@ -1,0 +1,232 @@
+/* 
+  NOMMAD — Estilos da tela de Login/Cadastro
+  Explicação geral (em linguagem simples):
+  - Este arquivo define o tema escuro e os estilos visuais dos elementos.
+  - O foco é mobile-first (pensamos primeiro no celular) e depois ajustamos para telas maiores.
+  - As cores principais são: fundo #121212, laranja #FF9A00 e azul #00C3FF.
+  - Usamos a fonte Inter (leve, moderna) para um visual parecido com apps como o Uber.
+*/
+
+:root {
+  /* Paleta de cores da marca */
+  --color-bg: #121212;            /* fundo principal (dark) */
+  --color-surface: #1C1C1C;       /* cartões e elementos de destaque */
+  --color-text: #EEEEEE;          /* texto primário (alto contraste no dark) */
+  --color-text-dim: #BDBDBD;      /* texto secundário/descrições */
+  --color-accent-orange: #FF9A00; /* cor de ação/destaque (1) */
+  --color-accent-blue: #00C3FF;   /* cor de ação/destaque (2) */
+  --color-danger: #FF4D4F;        /* mensagens de erro/alerta */
+  --color-divider: #2A2A2A;       /* linhas/separadores sutis */
+
+  /* Espaçamentos e raios de borda (valores em px) */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-24: 24px;
+
+  /* Larguras úteis */
+  --max-width: 440px; /* limita o cartão no centro em telas maiores */
+}
+
+/* Reset básico e tipografia */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout principal */
+.screen {
+  min-height: 100dvh; /* ocupa a altura total da tela, considerando barras do celular */
+  padding: env(safe-area-inset-top) var(--space-4) env(safe-area-inset-bottom);
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* cabeçalho, conteúdo, rodapé */
+  gap: var(--space-6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--space-4);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-text);
+}
+
+.card {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-24);
+  padding: calc(var(--space-6) + 4px) var(--space-5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.title {
+  margin: 0 0 var(--space-6) 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Botões */
+.btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: var(--radius-12);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.04s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-google {
+  background: #ffffff;
+  color: #202124;
+}
+
+.btn-google:hover {
+  background: #f5f5f5;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.4 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.3 36 26.8 37 24 37c-5.3 0-9.6-3.6-11.3-8.5l-6.6 5.1C9.4 39.7 16.1 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.3 3.8-4.6 6.5-8.3 6.5-5.3 0-9.6-4.3-9.6-9.5S18.7 16 24 16c2.8 0 5.3 1.2 7.1 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/></svg>');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-blue));
+  color: #0d0d0d;
+  box-shadow: 0 4px 14px rgba(0, 195, 255, 0.25);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+/* Separador "ou" */
+.separator {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+
+.separator .line {
+  height: 1px;
+  background: var(--color-divider);
+}
+
+.separator .or {
+  color: var(--color-text-dim);
+  font-size: 14px;
+}
+
+/* Formulário */
+.form { display: grid; gap: var(--space-4); }
+
+.label {
+  font-size: 14px;
+  color: var(--color-text-dim);
+}
+
+.phone-input {
+  display: grid;
+  grid-template-columns: 100px 1fr; /* campo do código e do número */
+  gap: var(--space-3);
+}
+
+.input {
+  width: 100%;
+  background: #151515;
+  border: 1px solid var(--color-divider);
+  color: var(--color-text);
+  padding: 14px 12px;
+  border-radius: var(--radius-12);
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder { color: #6f6f6f; }
+
+.input:focus {
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 0 3px rgba(0, 195, 255, 0.15);
+}
+
+/* Acessibilidade: estados de erro e foco visível também via teclado */
+.input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.15);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.help {
+  min-height: 18px; /* reserva espaço mesmo sem erro */
+  color: var(--color-danger);
+  font-size: 13px;
+}
+
+.switcher {
+  display: grid;
+  gap: 4px;
+  margin-top: var(--space-4);
+}
+
+.link {
+  background: transparent;
+  color: var(--color-text-dim);
+  border: none;
+  padding: 6px 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--color-text);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: var(--space-4);
+  color: var(--color-text-dim);
+}
+
+/* Responsividade simples: em telas maiores, ampliamos um pouco o título */
+@media (min-width: 480px) {
+  .title { font-size: 24px; }
+}
+

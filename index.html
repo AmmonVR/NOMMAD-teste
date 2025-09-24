@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NOMMAD — Entrar ou Cadastrar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- 
+      NOMMAD — Tela de Login/Cadastro (estilo inspirado no Uber)
+      Explicação geral:
+      - Esta página foca apenas na primeira etapa do app: autenticação
+      - O layout é pensado para celular (mobile-first) e usa tema escuro (#121212)
+      - As cores de destaque são laranja (#FF9A00) e azul (#00C3FF)
+      - Todo o comportamento (trocar entre login e cadastro, validar telefone, etc.) está em app.js
+      - Os comentários ao longo do HTML/CSS/JS explicam linha a linha o que está acontecendo
+    -->
+
+    <main class="screen">
+      <!-- Cabeçalho com logo: aqui deixamos um espaço para o logo do NOMMAD -->
+      <header class="header">
+        <!-- Se você já tiver um arquivo de logo, substitua o texto abaixo por uma <img> -->
+        <div class="logo" aria-label="Logo NOMMAD">NOMMAD</div>
+      </header>
+
+      <!-- Container central com o cartão de autenticação -->
+      <section class="card" role="region" aria-labelledby="auth-title">
+        <!-- Título dinâmico: muda conforme o modo (login ou cadastro) -->
+        <h1 id="auth-title" class="title" data-mode-text>Bem-vindo(a)</h1>
+
+        <!-- Botão "Entrar com Google" - opção proeminente -->
+        <button id="google-button" class="btn btn-google" type="button">
+          <span class="google-icon" aria-hidden="true"></span>
+          <span>Entrar com Google</span>
+        </button>
+
+        <!-- Separador visual com "ou" -->
+        <div class="separator" role="separator" aria-label="ou">
+          <span class="line"></span>
+          <span class="or">ou</span>
+          <span class="line"></span>
+        </div>
+
+        <!-- Campo de telefone com código do país (ex: +55) -->
+        <form id="auth-form" class="form" novalidate>
+          <!-- Rótulo acessível para leitores de tela -->
+          <label for="phone" class="label">Número de telefone</label>
+          <!-- Input do telefone: type=tel ajuda em teclados móveis -->
+          <div class="phone-input">
+            <input
+              id="country-code"
+              class="input code"
+              type="tel"
+              inputmode="tel"
+              autocomplete="tel-country-code"
+              aria-label="Código do país"
+              value="+55"
+              required
+            />
+            <input
+              id="phone"
+              class="input number"
+              type="tel"
+              inputmode="tel"
+              autocomplete="tel"
+              placeholder="Seu número"
+              aria-describedby="phone-help"
+              required
+            />
+          </div>
+          <!-- Mensagem de ajuda/erro do telefone -->
+          <div id="phone-help" class="help" aria-live="polite"></div>
+
+          <!-- Botão principal que avança para a próxima etapa -->
+          <button id="continue" class="btn btn-primary" type="submit">
+            Continuar
+          </button>
+        </form>
+
+        <!-- Links para alternar entre login e cadastro -->
+        <div class="switcher">
+          <button id="to-login" class="link" type="button">Já tem uma conta? Entrar</button>
+          <button id="to-signup" class="link" type="button">Não tem uma conta? Cadastre-se</button>
+        </div>
+      </section>
+
+      <!-- Rodapé simples com direitos autorais -->
+      <footer class="footer">
+        <small>© <span id="year"></span> NOMMAD. Todos os direitos reservados.</small>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+  </html>
+
