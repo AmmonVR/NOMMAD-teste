@@ -13,10 +13,11 @@
   nós apenas simulamos o próximo passo (ex.: verificação por SMS) com um alert.
 */
 
-(function initAuthScreen() {
+function initAuthScreen() {
   // Pegamos os elementos da página que vamos manipular.
   const yearEl = document.getElementById('year');
   const titleEl = document.querySelector('[data-mode-text]');
+  const authSection = document.getElementById('auth-section');
   const authSection = document.getElementById('auth-section');
   const googleBtn = document.getElementById('google-button');
   const googleBtnText = document.getElementById('google-button-text');
@@ -233,8 +234,11 @@
     clearErrors();
   });
 
-  // Inicializa a UI com o modo padrão.
-  renderByMode();
+  // Força estado inicial correto mesmo em ambientes como CodePen
+  // (onde o JS pode rodar antes do HTML se não configurado):
+  try {
+    renderByMode();
+  } catch (_) {}
 
   /* =====================
      CADASTRO — validações
@@ -419,5 +423,12 @@
 
   // Exemplo: se quiser abrir a Home direto para visualização agora, descomente:
   // showHome();
-})();
+}
+
+// Garante que a inicialização aconteça após o DOM estar pronto (compatível com CodePen)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAuthScreen);
+} else {
+  initAuthScreen();
+}
 
