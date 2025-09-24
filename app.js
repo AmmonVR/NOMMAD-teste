@@ -18,6 +18,7 @@
   const yearEl = document.getElementById('year');
   const titleEl = document.querySelector('[data-mode-text]');
   const googleBtn = document.getElementById('google-button');
+  const googleBtnText = document.getElementById('google-button-text');
   const formEl = document.getElementById('auth-form');
   const countryCodeInput = document.getElementById('country-code');
   const phoneInput = document.getElementById('phone');
@@ -56,11 +57,13 @@
     if (mode === 'login') {
       titleEl.textContent = 'Bem-vindo(a) de volta';
       continueBtn.textContent = 'Continuar';
+      if (googleBtnText) googleBtnText.textContent = 'Entrar com Google';
       setHidden(loginView, false);
       setHidden(signupView, true);
     } else {
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
+      if (googleBtnText) googleBtnText.textContent = 'Cadastrar com Google';
       setHidden(loginView, true);
       setHidden(signupView, false);
     }
