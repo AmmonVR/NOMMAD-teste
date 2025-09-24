@@ -111,9 +111,13 @@ function initAuthScreen() {
     if (hidden) {
       element.classList.add('hidden');
       element.setAttribute('aria-hidden', 'true');
+      element.setAttribute('hidden', '');
+      element.style.display = 'none';
     } else {
       element.classList.remove('hidden');
       element.setAttribute('aria-hidden', 'false');
+      element.removeAttribute('hidden');
+      element.style.display = '';
     }
   }
 
