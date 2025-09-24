@@ -57,13 +57,13 @@
     if (mode === 'login') {
       titleEl.textContent = 'Bem-vindo(a) de volta';
       continueBtn.textContent = 'Continuar';
-      if (googleBtnText) googleBtnText.textContent = 'Entrar com Google';
+      if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
       setHidden(loginView, false);
       setHidden(signupView, true);
     } else {
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
-      if (googleBtnText) googleBtnText.textContent = 'Cadastrar com Google';
+      if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
       setHidden(loginView, true);
       setHidden(signupView, false);
     }
