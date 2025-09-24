@@ -64,7 +64,12 @@ body {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: var(--color-text);
+  font-family: 'Cherry Bomb One', cursive;
+  background: linear-gradient(90deg, #ffe556, #00bcf0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .card {
