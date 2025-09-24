@@ -17,6 +17,7 @@
   // Pegamos os elementos da página que vamos manipular.
   const yearEl = document.getElementById('year');
   const titleEl = document.querySelector('[data-mode-text]');
+  const authSection = document.getElementById('auth-section');
   const googleBtn = document.getElementById('google-button');
   const googleBtnText = document.getElementById('google-button-text');
   const formEl = document.getElementById('auth-form');
@@ -69,6 +70,7 @@
       titleEl.textContent = 'Bem-vindo(a) de volta';
       continueBtn.textContent = 'Continuar';
       if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
+      setHidden(authSection, false);
       setHidden(loginView, false);
       setHidden(signupView, true);
       setHidden(homeView, true);
@@ -77,6 +79,7 @@
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
       if (googleBtnText) googleBtnText.textContent = 'Continuar com o Google';
+      setHidden(authSection, false);
       setHidden(loginView, true);
       setHidden(signupView, false);
       setHidden(homeView, true);
@@ -360,8 +363,7 @@
      ===================== */
   function showHome() {
     // Oculta auth e exibe Home + navbar
-    setHidden(loginView, true);
-    setHidden(signupView, true);
+    setHidden(authSection, true);
     setHidden(homeView, false);
     setHidden(bottomNav, false);
     // foca na busca para UX rápida
