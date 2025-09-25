@@ -484,15 +484,33 @@ input[type="checkbox"] {
   padding: var(--space-5);
 }
 
-.recruit-card p { margin: 0; color: var(--color-text-dim); }
+.recruit-card p { margin: 0 0 6px 0; color: var(--color-text-dim); }
 .recruit-card .brand {
   font-family: 'Cherry Bomb One', cursive;
-  font-size: 20px;
+  font-size: 50px;
   background: linear-gradient(90deg, #ffe556, #00bcf0);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+}
+
+.recruit-card .cta {
+  display: flex;
+  justify-content: flex-end; /* botão à direita */
+  margin-top: 12px;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-divider);
+  border-radius: 999px; /* bordas bem arredondadas */
+  padding: 10px 16px;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-accent-blue);
 }
 
 /* Navbar inferior */
