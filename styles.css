@@ -430,6 +430,7 @@ input[type="checkbox"] {
 
 .carousel-viewport {
   overflow: hidden; /* evita rolagem horizontal global */
+  width: 100%;
 }
 
 .carousel-track {
@@ -455,10 +456,16 @@ input[type="checkbox"] {
   display: grid;
   place-items: center;
   cursor: pointer;
+  z-index: 5;
 }
 
 .carousel-arrow.prev { left: 0; }
 .carousel-arrow.next { right: 0; }
+
+/* Responsivo: reduz espaço visual das setas em telas menores */
+@media (max-width: 480px) {
+  .carousel-arrow { width: 28px; height: 28px; }
+}
 
 .carousel-arrow:hover { filter: brightness(1.1); }
 
