@@ -362,7 +362,7 @@ input[type="checkbox"] {
 /* ===================== */
 .home {
   width: 100%;
-  max-width: 1120px; /* ampla em desktop */
+  max-width: min(1120px, 100%); /* amplia mas respeita telas menores */
   margin: 0 auto;
   display: grid;
   gap: var(--space-5);
@@ -431,6 +431,7 @@ input[type="checkbox"] {
 .carousel-viewport {
   overflow: hidden; /* evita rolagem horizontal global */
   width: 100%;
+  display: block;
 }
 
 .carousel-track {
@@ -457,10 +458,13 @@ input[type="checkbox"] {
   place-items: center;
   cursor: pointer;
   z-index: 5;
+  visibility: visible;
 }
 
 .carousel-arrow.prev { left: 0; }
 .carousel-arrow.next { right: 0; }
+
+.carousel-arrow[disabled] { opacity: 0.35; pointer-events: none; }
 
 /* Responsivo: reduz espaço visual das setas em telas menores */
 @media (max-width: 480px) {

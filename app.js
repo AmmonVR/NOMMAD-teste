@@ -486,15 +486,11 @@ function initAuthScreen() {
     const total = getTotalCards();
     const maxIndex = Math.max(0, Math.ceil(total / cardsPerView) - 1);
     if (arrowPrev) arrowPrev.disabled = carouselIndex <= 0;
-    if (arrowNext) arrowNext.disabled = carouselIndex >= maxIndex;
+    if (arrowNext) arrowNext.disabled = carouselIndex >= maxIndex || maxIndex === 0;
 
     // Visibilidade da seta esquerda: só mostra após rolar para a direita
     if (arrowPrev) {
-      if (carouselIndex <= 0) {
-        arrowPrev.style.visibility = 'hidden';
-      } else {
-        arrowPrev.style.visibility = 'visible';
-      }
+      arrowPrev.style.visibility = carouselIndex <= 0 ? 'hidden' : 'visible';
     }
   }
 
