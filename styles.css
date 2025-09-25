@@ -421,17 +421,19 @@ input[type="checkbox"] {
 }
 
 .section-header { display: flex; align-items: center; justify-content: space-between; }
-.section-title { margin: 0 0 14px 0; font-size: 16px; color: var(--color-text-dim); }
+.section-title { margin: 0 0 10px 0; font-size: 16px; color: var(--color-text-dim); }
 
 .carousel {
   position: relative;
-  display: block; /* setas passam a ser absolutas e não deslocam o conteúdo */
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* setas - viewport - setas */
+  align-items: center;
+  gap: 8px;
 }
 
 .carousel-viewport {
   overflow: hidden; /* evita rolagem horizontal global */
   width: 100%;
-  display: block;
 }
 
 .carousel-track {
@@ -445,9 +447,6 @@ input[type="checkbox"] {
 }
 
 .carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   background: #1a1a1a;
   color: var(--color-text);
   border: 1px solid var(--color-divider);
@@ -457,12 +456,7 @@ input[type="checkbox"] {
   display: grid;
   place-items: center;
   cursor: pointer;
-  z-index: 5;
-  visibility: visible;
 }
-
-.carousel-arrow.prev { left: 0; }
-.carousel-arrow.next { right: 0; }
 
 .carousel-arrow[disabled] { opacity: 0.35; pointer-events: none; }
 
