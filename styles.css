@@ -502,13 +502,15 @@ input[type="checkbox"] {
 }
 
 .btn-brand-small {
-  background: var(--color-accent-blue);
+  background: #00bcf0 !important; /* azul da brand solicitado */
   color: #0d0d0d;
   border: none;
   border-radius: 999px;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
+  width: auto;           /* sobrescreve .btn width:100% */
+  display: inline-flex;  /* deixa compacto */
 }
 
 .btn-brand-small:hover { filter: brightness(1.05); }
