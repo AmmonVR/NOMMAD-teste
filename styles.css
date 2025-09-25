@@ -368,9 +368,9 @@ input[type="checkbox"] {
   grid-auto-flow: column;
   justify-content: center;
   gap: var(--space-2);
-  background: #1a1a1a;
+  background: #151515; /* cinza neutro dark para o container */
   border-radius: 24px;
-  padding: 6px;
+  padding: 4px; /* mais compacto */
   border: 1px solid var(--color-divider);
   max-width: fit-content;
   margin: 0 auto;
@@ -381,7 +381,7 @@ input[type="checkbox"] {
   border: none;
   color: var(--color-text-dim);
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 8px 14px; /* altura mais baixa, estilo chip */
   cursor: pointer;
   border-radius: 18px;
   transition: all 0.2s ease;
@@ -392,9 +392,10 @@ input[type="checkbox"] {
 }
 
 .tab.active {
-  background: linear-gradient(90deg, #ffe556, #00bcf0);
-  color: #0d0d0d;
-  box-shadow: 0 2px 8px rgba(0, 188, 240, 0.25);
+  background: #2a2a2a; /* cinza neutro para destaque no dark */
+  color: var(--color-text);
+  border: 1px solid #3a3a3a; /* contorno sutil */
+  box-shadow: none;
 }
 
 .tab-icon {
