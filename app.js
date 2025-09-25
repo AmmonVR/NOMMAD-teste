@@ -451,9 +451,11 @@ function initAuthScreen() {
 
   function getCardsPerView() {
     if (!carouselViewport || !carouselTrack) return 1;
+    const styles = getComputedStyle(carouselTrack);
+    const cardWidth = parseFloat(styles.getPropertyValue('grid-auto-columns')) || 120;
+    const gap = parseFloat(styles.getPropertyValue('column-gap')) || 12;
     const viewportWidth = carouselViewport.getBoundingClientRect().width;
-    const cardWidth = 120 + 12; // largura base + gap (mantido do CSS)
-    return Math.max(1, Math.floor(viewportWidth / cardWidth));
+    return Math.max(1, Math.floor(viewportWidth / (cardWidth + gap)));
   }
 
   function getTotalCards() {
@@ -462,9 +464,11 @@ function initAuthScreen() {
 
   function updateCarousel() {
     if (!carouselTrack || !carouselViewport) return;
+    const styles = getComputedStyle(carouselTrack);
+    const cardWidth = parseFloat(styles.getPropertyValue('grid-auto-columns')) || 120;
+    const gap = parseFloat(styles.getPropertyValue('column-gap')) || 12;
     const cardsPerView = getCardsPerView();
-    const cardWidth = 120 + 12;
-    const offset = carouselIndex * cardWidth * cardsPerView;
+    const offset = carouselIndex * (cardWidth + gap) * cardsPerView;
     carouselTrack.style.transform = `translateX(-${offset}px)`;
 
     // Desabilita setas nos limites

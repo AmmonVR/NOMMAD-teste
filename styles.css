@@ -29,6 +29,10 @@
   --radius-24: 24px;
   --radius-16: 16px;
 
+  /* Dimensões padrão do carrossel (mobile-first) */
+  --carousel-card-width: 120px;
+  --carousel-gap: 12px;
+
   /* Larguras úteis */
   --max-width: 440px; /* limita o cartão no centro em telas maiores */
 }
@@ -43,6 +47,7 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Layout principal */
@@ -287,6 +292,39 @@ input[type="checkbox"] {
   .title { font-size: 24px; }
 }
 
+/* Breakpoints desktop */
+@media (min-width: 768px) {
+  .home { max-width: 720px; }
+  :root { --carousel-card-width: 140px; --carousel-gap: 14px; }
+  .suggestion-card .emoji { font-size: 28px; }
+  .suggestion-card .label { font-size: 14px; }
+}
+
+@media (min-width: 1024px) {
+  .home { max-width: 960px; }
+  :root { --carousel-card-width: 180px; --carousel-gap: 16px; }
+  .suggestion-card { min-height: 120px; }
+  .nav-label { font-size: 13px; }
+}
+
+@media (min-width: 1280px) {
+  .home { max-width: 1120px; }
+  :root { --carousel-card-width: 200px; --carousel-gap: 18px; }
+}
+
+/* Somente leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Paisagem com pouca altura: deixar a caixa mais compacta */
 @media (orientation: landscape) and (max-height: 480px) {
   .screen {
@@ -393,8 +431,8 @@ input[type="checkbox"] {
 .carousel-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 120px;
-  gap: 12px;
+  grid-auto-columns: var(--carousel-card-width);
+  gap: var(--carousel-gap);
   padding-bottom: 4px;
   transform: translateX(0);
   transition: transform 300ms ease;
