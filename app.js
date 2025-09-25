@@ -490,7 +490,10 @@ function initAuthScreen() {
 
     // Visibilidade da seta esquerda: só mostra após rolar para a direita
     if (arrowPrev) {
-      arrowPrev.style.visibility = carouselIndex <= 0 ? 'hidden' : 'visible';
+      const atStart = carouselIndex <= 0;
+      arrowPrev.style.visibility = atStart ? 'hidden' : 'visible';
+      // Remove o espaço da seta esquerda quando no início para alinhar as caixas à esquerda
+      arrowPrev.style.display = atStart ? 'none' : 'grid';
     }
   }
 
