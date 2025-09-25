@@ -366,8 +366,11 @@ input[type="checkbox"] {
 .tabs {
   display: grid;
   grid-auto-flow: column;
-  justify-content: start;
-  gap: var(--space-4);
+  justify-content: center;
+  gap: 4px;
+  padding: 2px; /* container mais compacto */
+  max-width: fit-content;
+  margin: 0 auto;
 }
 
 .tab {
@@ -375,25 +378,63 @@ input[type="checkbox"] {
   border: none;
   color: var(--color-text-dim);
   font-weight: 600;
-  padding: 10px 0;
+  padding: 8px 16px; /* altura bem menor, formato pílula compacta */
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  font-size: 12px;
+  height: 32px;
 }
 
 .tab.active {
+  background: #2d2d2d; /* cinza neutro mais suave */
   color: var(--color-text);
-  border-color: var(--color-accent-blue);
+  border: 1px solid #404040; /* contorno mais sutil */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tab-icon {
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-text {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .search-section { display: grid; gap: var(--space-3); }
 
 .search-form { position: relative; }
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-text-dim);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .search-input {
   width: 100%;
   background: #151515;
   border: 1px solid var(--color-divider);
   color: var(--color-text);
-  padding: 14px 14px;
+  padding: 14px 14px 14px 44px; /* padding-left maior para o ícone */
   border-radius: var(--radius-16);
   font-size: 16px;
 }
