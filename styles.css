@@ -66,16 +66,10 @@ body {
   padding-top: var(--space-4);
 }
 
-.logo {
-  font-size: 50px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  font-family: 'Cherry Bomb One', cursive;
-  background: linear-gradient(90deg, #ffe556, #00bcf0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .card {
