@@ -414,12 +414,27 @@ input[type="checkbox"] {
 .search-section { display: grid; gap: var(--space-3); }
 
 .search-form { position: relative; }
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-text-dim);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .search-input {
   width: 100%;
   background: #151515;
   border: 1px solid var(--color-divider);
   color: var(--color-text);
-  padding: 14px 14px;
+  padding: 14px 14px 14px 44px; /* padding-left maior para o ícone */
   border-radius: var(--radius-16);
   font-size: 16px;
 }
