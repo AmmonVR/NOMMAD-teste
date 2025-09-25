@@ -367,7 +367,11 @@ input[type="checkbox"] {
   display: grid;
   grid-auto-flow: column;
   justify-content: start;
-  gap: var(--space-4);
+  gap: var(--space-2);
+  background: #1a1a1a;
+  border-radius: var(--radius-12);
+  padding: 4px;
+  border: 1px solid var(--color-divider);
 }
 
 .tab {
@@ -375,14 +379,34 @@ input[type="checkbox"] {
   border: none;
   color: var(--color-text-dim);
   font-weight: 600;
-  padding: 10px 0;
+  padding: 12px 20px;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  border-radius: var(--radius-8);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
 }
 
 .tab.active {
-  color: var(--color-text);
-  border-color: var(--color-accent-blue);
+  background: linear-gradient(90deg, #ffe556, #00bcf0);
+  color: #0d0d0d;
+  box-shadow: 0 2px 8px rgba(0, 188, 240, 0.25);
+}
+
+.tab-icon {
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-text {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .search-section { display: grid; gap: var(--space-3); }
