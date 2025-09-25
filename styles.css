@@ -368,10 +368,10 @@ input[type="checkbox"] {
   grid-auto-flow: column;
   justify-content: center;
   gap: 4px;
-  background: #151515; /* cinza neutro dark para o container */
+  background: #1a1a1a; /* cinza um pouco mais claro para o container */
   border-radius: 999px;
   padding: 2px; /* container mais compacto */
-  border: 1px solid var(--color-divider);
+  border: 1px solid #2a2a2a; /* borda mais sutil */
   max-width: fit-content;
   margin: 0 auto;
 }
@@ -394,10 +394,10 @@ input[type="checkbox"] {
 }
 
 .tab.active {
-  background: #2a2a2a; /* cinza neutro para destaque no dark */
+  background: #2d2d2d; /* cinza neutro mais suave */
   color: var(--color-text);
-  border: 1px solid #3a3a3a; /* contorno sutil */
-  box-shadow: none;
+  border: 1px solid #404040; /* contorno mais sutil */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .tab-icon {
