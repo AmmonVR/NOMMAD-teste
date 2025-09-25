@@ -368,10 +368,7 @@ input[type="checkbox"] {
   grid-auto-flow: column;
   justify-content: center;
   gap: 4px;
-  background: #1a1a1a; /* cinza um pouco mais claro para o container */
-  border-radius: 999px;
   padding: 2px; /* container mais compacto */
-  border: 1px solid #2a2a2a; /* borda mais sutil */
   max-width: fit-content;
   margin: 0 auto;
 }
