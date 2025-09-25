@@ -53,6 +53,12 @@ function initAuthScreen() {
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const searchHistory = document.getElementById('search-history');
+  // Carousel
+  const carousel = document.getElementById('suggestions-carousel');
+  const carouselViewport = document.querySelector('#suggestions-carousel .carousel-viewport');
+  const carouselTrack = document.querySelector('#suggestions-carousel .carousel-track');
+  const arrowPrev = document.querySelector('#suggestions-carousel .carousel-arrow.prev');
+  const arrowNext = document.querySelector('#suggestions-carousel .carousel-arrow.next');
 
   // Estado simples para saber se estamos no modo "login" ou "cadastro".
   // Começamos no modo "login" (poderia ser configurável).
@@ -437,6 +443,50 @@ function initAuthScreen() {
 
   // Exemplo: se quiser abrir a Home direto para visualização agora, descomente:
   // showHome();
+
+  /* =====================
+     CARROSSEL — interação
+     ===================== */
+  let carouselIndex = 0; // índice de página
+
+  function getCardsPerView() {
+    if (!carouselViewport || !carouselTrack) return 1;
+    const viewportWidth = carouselViewport.getBoundingClientRect().width;
+    const cardWidth = 120 + 12; // largura base + gap (mantido do CSS)
+    return Math.max(1, Math.floor(viewportWidth / cardWidth));
+  }
+
+  function getTotalCards() {
+    return carouselTrack ? carouselTrack.children.length : 0;
+  }
+
+  function updateCarousel() {
+    if (!carouselTrack || !carouselViewport) return;
+    const cardsPerView = getCardsPerView();
+    const cardWidth = 120 + 12;
+    const offset = carouselIndex * cardWidth * cardsPerView;
+    carouselTrack.style.transform = `translateX(-${offset}px)`;
+
+    // Desabilita setas nos limites
+    const total = getTotalCards();
+    const maxIndex = Math.max(0, Math.ceil(total / cardsPerView) - 1);
+    if (arrowPrev) arrowPrev.disabled = carouselIndex <= 0;
+    if (arrowNext) arrowNext.disabled = carouselIndex >= maxIndex;
+  }
+
+  function moveCarousel(direction) {
+    const cardsPerView = getCardsPerView();
+    const total = getTotalCards();
+    const maxIndex = Math.max(0, Math.ceil(total / cardsPerView) - 1);
+    carouselIndex = Math.min(maxIndex, Math.max(0, carouselIndex + direction));
+    updateCarousel();
+  }
+
+  arrowPrev?.addEventListener('click', () => moveCarousel(-1));
+  arrowNext?.addEventListener('click', () => moveCarousel(1));
+  window.addEventListener('resize', () => { carouselIndex = 0; updateCarousel(); });
+  // Inicializa posição
+  updateCarousel();
 }
 
 // Garante que a inicialização aconteça após o DOM estar pronto (compatível com CodePen)

@@ -379,17 +379,40 @@ input[type="checkbox"] {
 .section-title { margin: 0; font-size: 16px; color: var(--color-text-dim); }
 
 .carousel {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* setas - viewport - setas */
+  align-items: center;
+  gap: 8px;
+}
+
+.carousel-viewport {
+  overflow: hidden; /* evita rolagem horizontal global */
+}
+
+.carousel-track {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 120px;
   gap: 12px;
-  overflow-x: auto;
   padding-bottom: 4px;
-  scroll-snap-type: x mandatory;
+  transform: translateX(0);
+  transition: transform 300ms ease;
 }
 
-.carousel::-webkit-scrollbar { height: 6px; }
-.carousel::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 999px; }
+.carousel-arrow {
+  background: #1a1a1a;
+  color: var(--color-text);
+  border: 1px solid var(--color-divider);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.carousel-arrow:hover { filter: brightness(1.1); }
 
 .suggestion-card {
   scroll-snap-align: start;
