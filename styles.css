@@ -256,13 +256,7 @@ input[type="checkbox"] {
   margin-right: 8px;
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: var(--space-4);
-  color: var(--color-text-dim);
-}
+/* Removido footer para ganhar espaço para a navbar */
 
 /* Campo de senha com botão de visibilidade */
 .password-wrap {
@@ -534,6 +528,7 @@ input[type="checkbox"] {
   background: rgba(20,20,20,0.9);
   backdrop-filter: blur(6px);
   border-top: 1px solid var(--color-divider);
+  min-height: 64px; /* aproveita o espaço do antigo rodapé */
 }
 
 .nav-item {
