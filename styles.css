@@ -502,11 +502,11 @@ input[type="checkbox"] {
 }
 
 .btn-brand-small {
-  background: #00bcf0 !important; /* azul da brand solicitado */
+  background: linear-gradient(90deg, #ffe556, #00bcf0); /* azul da brand solicitado */
   color: #0d0d0d;
   border: none;
   border-radius: 999px;
-  padding: 8px 14px;
+  padding: 15px 25px;
   font-size: 13px;
   font-weight: 700;
   width: auto;           /* sobrescreve .btn width:100% */
