@@ -72,6 +72,19 @@ body {
   color: var(--color-text);
 }
 
+/* Logo NOMMAD (exibida no login, oculta na Home) */
+.logo {
+  font-size: 50px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-family: 'Cherry Bomb One', cursive;
+  background: linear-gradient(90deg, #ffe556, #00bcf0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
 .card {
   width: 100%;
   max-width: var(--max-width);
@@ -349,7 +362,7 @@ input[type="checkbox"] {
 /* ===================== */
 .home {
   width: 100%;
-  max-width: var(--max-width);
+  max-width: 1120px; /* ampla em desktop */
   margin: 0 auto;
   display: grid;
   gap: var(--space-5);

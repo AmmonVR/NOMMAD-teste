@@ -46,6 +46,8 @@ function initAuthScreen() {
   // HOME
   const homeView = document.getElementById('home-view');
   const bottomNav = document.getElementById('bottom-nav');
+  const headerLogo = document.getElementById('header-logo');
+  const headerTitle = document.getElementById('header-title');
   const tabServicesBtn = document.getElementById('tab-services-btn');
   const tabRequestsBtn = document.getElementById('tab-requests-btn');
   const tabServices = document.getElementById('tab-services');
@@ -81,6 +83,9 @@ function initAuthScreen() {
       setHidden(signupView, true);
       setHidden(homeView, true);
       setHidden(bottomNav, true);
+      // Header para login: mostra logo, esconde título
+      setHidden(headerLogo, false);
+      setHidden(headerTitle, true);
     } else {
       titleEl.textContent = 'Crie sua conta';
       continueBtn.textContent = 'Continuar';
@@ -90,6 +95,9 @@ function initAuthScreen() {
       setHidden(signupView, false);
       setHidden(homeView, true);
       setHidden(bottomNav, true);
+      // Header para cadastro: mantém logo visível também
+      setHidden(headerLogo, false);
+      setHidden(headerTitle, true);
     }
   }
 
@@ -390,6 +398,9 @@ function initAuthScreen() {
     setHidden(authSection, true);
     setHidden(homeView, false);
     setHidden(bottomNav, false);
+    // Troca header: esconde logo, mostra título "Início"
+    setHidden(headerLogo, true);
+    setHidden(headerTitle, false);
     // foca na busca para UX rápida
     setTimeout(() => searchInput?.focus(), 0);
   }
