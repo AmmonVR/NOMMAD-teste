@@ -502,7 +502,7 @@ input[type="checkbox"] {
 }
 
 .btn-brand-small {
-  background: linear-gradient(90deg, #ffe556, #00bcf0); /* azul da brand solicitado */
+  background: linear-gradient(90deg, #00bcf0, #ffe556);
   color: #0d0d0d;
   border: none;
   border-radius: 999px;
