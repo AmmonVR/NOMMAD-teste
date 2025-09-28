@@ -679,7 +679,12 @@ function addConversationMessage(text, received = false) {
   if (chatTabBtn) chatTabBtn.addEventListener('click', (e) => { e.preventDefault(); openChatsList(); setActiveNav(chatTabBtn); });
 
   // Close chat list
-  if (closeChatsBtn) closeChatsBtn.addEventListener('click', (e) => { e.preventDefault(); closeChats(); });
+  if (closeChatsBtn) closeChatsBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeChats(); // Essa função fecha a tela do chat
+    showHome(); // Essa função exibe a tela inicial
+    setActiveNav(homeTabBtn); // Essa função destaca o botão de início
+  });
 
   // Clicking a chat item opens conversation (delegation)
   chatsContainer?.addEventListener('click', (e) => {
