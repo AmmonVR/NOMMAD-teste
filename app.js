@@ -645,16 +645,18 @@ function initAuthScreen() {
     document.body.style.overflow = '';
   }
 
+  
   // Helper to append message bubble
-  function addConversationMessage(text, received = false) {
+function addConversationMessage(text, received = false) {
     if (!conversationMessages) return;
     const el = document.createElement('div');
     el.className = 'chat-bubble' + (received ? ' received' : '');
     el.textContent = text;
-    conversationMessages.appendChild(el);
+    // Mude de appendChild para prepend
+    conversationMessages.prepend(el); 
     // scroll to bottom
     setTimeout(() => { conversationMessages.scrollTop = conversationMessages.scrollHeight; }, 20);
-  }
+}
 
   // Wire bottom nav chat button
   if (chatTabBtn) chatTabBtn.addEventListener('click', (e) => { e.preventDefault(); transientMsg('Chat clicado'); openChatsList(); });
