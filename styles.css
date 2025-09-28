@@ -809,15 +809,15 @@ input[type="checkbox"] {
 }
 
 .chat-messages {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-  padding-bottom: 110px; /* reserve input height */
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    /* Essa é a linha-chave! Inverte a direção do layout */
+    flex-direction: column-reverse;
+    gap: 10px;
+    padding: 16px;
+    padding-bottom: 110px;
 }
-
 .chat-bubble {
   max-width: 78%;
   padding: 10px 12px;
