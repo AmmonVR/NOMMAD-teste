@@ -659,7 +659,7 @@ function addConversationMessage(text, received = false) {
 }
 
   // Wire bottom nav chat button
-  if (chatTabBtn) chatTabBtn.addEventListener('click', (e) => { e.preventDefault(); transientMsg('Chat clicado'); openChatsList(); });
+  if (chatTabBtn) chatTabBtn.addEventListener('click', (e) => { e.preventDefault(); openChatsList(); });
   // Wire bottom nav home button
   if (homeTabBtn) homeTabBtn.addEventListener('click', (e) => { e.preventDefault(); showHome(); setActiveNav(homeTabBtn);
     // hide any chat overlays when returning home
@@ -696,7 +696,14 @@ function addConversationMessage(text, received = false) {
 
   // Back from conversation to list
   if (backToChatsBtn) backToChatsBtn.addEventListener('click', (e) => { e.preventDefault(); openChatsList(); });
-  if (closeConversationBtn) closeConversationBtn.addEventListener('click', (e) => { e.preventDefault(); closeConversation(); });
+  // Close conversation to go back to chats list
+  if (closeConversationBtn) closeConversationBtn.addEventListener('click', (e) => { 
+     e.preventDefault(); 
+     closeConversation(); // Fecha a tela de conversa
+     // Adicione estas duas linhas
+     showHome(); // Exibe a tela inicial
+     setActiveNav(homeTabBtn); // Ativa o botão de 'início' na barra de navegação
+  });
 
   // Sending a message in conversation
   if (conversationInputForm) {
