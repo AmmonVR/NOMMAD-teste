@@ -841,7 +841,30 @@ input[type="checkbox"] {
 }
 
 .chat-input { flex: 1 1 auto; padding: 12px; border-radius: 12px; background: #121212; border: 1px solid var(--color-divider); color: var(--color-text); }
-.chat-send-btn { background: var(--color-accent-blue); color: #000; border: none; padding: 10px 14px; border-radius: 10px; font-weight:700; cursor:pointer; }
+.chat-send-btn {
+    /* Adiciona estas propriedades para centralizar o ícone */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Remove o padding padrão, para que o ícone não fique muito longe da borda */
+    padding: 0;
+    
+    /* Ajuste de tamanho e cor */
+    width: 44px; /* ou o tamanho que desejar */
+    height: 44px; /* ou o tamanho que desejar */
+    background: #3b3b3b; /* Cor azul, ou a cor que preferir */
+    color: #fff; /* Cor do ícone */
+    border: none;
+    border-radius: 50%; /* Deixa o botão redondo se quiser */
+    cursor: pointer;
+}
 
+.chat-send-btn svg {
+    /* O ícone SVG herda a cor do pai, mas pode ser ajustado */
+    color: inherit;
+    width: 20px;
+    height: 20px;
+}
 .hidden { display: none; }
 
