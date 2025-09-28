@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NOMMAD — Entrar ou Cadastrar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <!-- 
+      NOMMAD — Tela de Login/Cadastro (estilo inspirado no Uber)
+      Explicação geral:
+      - Esta página foca apenas na primeira etapa do app: autenticação
+      - O layout é pensado para celular (mobile-first) e usa tema escuro (#121212)
+      - As cores de destaque são laranja (#FF9A00) e azul (#00C3FF)
+      - Todo o comportamento (trocar entre login e cadastro, validar telefone, etc.) está em app.js
+      - Os comentários ao longo do HTML/CSS/JS explicam linha a linha o que está acontecendo
+    -->
+
+    <main class="screen">
+      <!-- Cabeçalho com logo: aqui deixamos um espaço para o logo do NOMMAD -->
+      <header class="header" role="banner">
+        <div class="logo" id="header-logo" aria-label="Logo NÔMMAD">NÔMMAD</div>
+        <div class="header-title hidden" id="header-title">Início</div>
+      </header>
+
+      <!-- Container central com o cartão de autenticação -->
+      <section id="auth-section" class="card" role="region" aria-labelledby="auth-title">
+        <!-- Título dinâmico: muda conforme o modo (login ou cadastro) -->
+        <h1 id="auth-title" class="title" data-mode-text>Bem-vindo(a)</h1>
+
+        <!-- Botão "Entrar com Google" - opção proeminente -->
+        <button id="google-button" class="btn btn-google" type="button">
+          <span class="google-icon mono" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true" focusable="false">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.4 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.3 36 26.8 37 24 37c-5.3 0-9.6-3.6-11.3-8.5l-6.6 5.1C9.4 39.7 16.1 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.3 3.8-4.6 6.5-8.3 6.5-5.3 0-9.6-4.3-9.6-9.5S18.7 16 24 16c2.8 0 5.3 1.2 7.1 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+            </svg>
+          </span>
+          <span id="google-button-text">Continuar com o Google</span>
+        </button>
+
+        <!-- Separador visual com "ou" -->
+        <div class="separator" role="separator" aria-label="ou">
+          <span class="line"></span>
+          <span class="or">ou</span>
+          <span class="line"></span>
+        </div>
+
+        <!-- LOGIN VIEW -->
+        <div id="login-view">
+          <!-- Campo de telefone com código do país (ex: +55) -->
+          <form id="auth-form" class="form" novalidate action="javascript:void(0)">
+            <!-- Rótulo acessível para leitores de tela -->
+            <label for="phone" class="label">Número de telefone</label>
+            <!-- Input do telefone: type=tel ajuda em teclados móveis -->
+            <div class="phone-input">
+              <input
+                id="country-code"
+                class="input code"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-country-code"
+                aria-label="Código do país"
+                value="+55"
+                required
+              />
+              <input
+                id="phone"
+                class="input number"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="Seu número"
+                aria-describedby="phone-help"
+                required
+              />
+            </div>
+            <!-- Mensagem de ajuda/erro do telefone -->
+            <div id="phone-help" class="help" aria-live="polite"></div>
+
+            <!-- Botão principal que avança para a próxima etapa -->
+            <button id="continue" class="btn btn-primary" type="submit">
+              Continuar
+            </button>
+          </form>
+
+          <!-- Link para alternar para o cadastro -->
+          <div class="switcher">
+            <button id="to-signup" class="link" type="button" data-action="to-signup">Não tem uma conta? Cadastre-se</button>
+          </div>
+        </div>
+
+        <!-- SIGNUP VIEW (inicialmente escondida) -->
+        <div id="signup-view" class="hidden" aria-hidden="true">
+          <form id="signup-form" class="form" novalidate action="javascript:void(0)">
+            <label for="signup-name" class="label">Nome completo</label>
+            <input id="signup-name" class="input" type="text" autocomplete="name" placeholder="Seu nome" required />
+
+            <label for="signup-email" class="label">Email</label>
+            <input id="signup-email" class="input" type="email" autocomplete="email" placeholder="seu@email.com" required />
+
+            <label for="signup-phone" class="label">Número de telefone</label>
+            <div class="phone-input">
+              <input
+                id="signup-country-code"
+                class="input code"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-country-code"
+                aria-label="Código do país"
+                value="+55"
+                required
+              />
+              <input
+                id="signup-phone"
+                class="input number"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="Seu número"
+                required
+              />
+            </div>
+
+            <label for="signup-password" class="label">Senha</label>
+            <div class="password-wrap">
+              <input id="signup-password" class="input" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required />
+              <button type="button" class="icon-btn toggle-password" data-target="signup-password" aria-label="Mostrar senha" aria-pressed="false">
+                <!-- Ícone olho (visível quando a senha está oculta) -->
+                <svg class="eye on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 13c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                <!-- Ícone olho-riscado (visível quando a senha está sendo mostrada) -->
+                <svg class="eye off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 6c5 0 9.27 3.11 11 7.5-.58 1.51-1.55 2.85-2.78 3.94l1.42 1.42-1.41 1.41-18-18 1.41-1.41 3.2 3.2C8.36 6.35 10.12 6 12 6zM4.1 7.27l2.09 2.09C4.6 10.38 3.33 11.82 3 12.5 4.73 16.89 9 20 14 20c1.98 0 3.83-.41 5.47-1.13l1.63 1.63-1.41 1.41-18-18 1.41-1.41zM9.9 13.07l1.53 1.53a3.99 3.99 0 01-1.53-1.53zM12 8c-1.1 0-2 .9-2 2 0 .37.1.71.27 1.01l2.74 2.74c.3.17.64.27 1 .27 1.1 0 2-.9 2-2 0-.36-.1-.7-.27-1L13 8.27C12.7 8.1 12.36 8 12 8z"/>
+                </svg>
+              </button>
+            </div>
+
+            <label for="signup-confirm" class="label">Confirmar senha</label>
+            <div class="password-wrap">
+              <input id="signup-confirm" class="input" type="password" autocomplete="new-password" placeholder="Repita sua senha" required />
+              <button type="button" class="icon-btn toggle-password" data-target="signup-confirm" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="eye on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 13c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                <svg class="eye off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M12 6c5 0 9.27 3.11 11 7.5-.58 1.51-1.55 2.85-2.78 3.94l1.42 1.42-1.41 1.41-18-18 1.41-1.41 3.2 3.2C8.36 6.35 10.12 6 12 6zM4.1 7.27l2.09 2.09C4.6 10.38 3.33 11.82 3 12.5 4.73 16.89 9 20 14 20c1.98 0 3.83-.41 5.47-1.13l1.63 1.63-1.41 1.41-18-18 1.41-1.41zM9.9 13.07l1.53 1.53a3.99 3.99 0 01-1.53-1.53zM12 8c-1.1 0-2 .9-2 2 0 .37.1.71.27 1.01l2.74 2.74c.3.17.64.27 1 .27 1.1 0 2-.9 2-2 0-.36-.1-.7-.27-1L13 8.27C12.7 8.1 12.36 8 12 8z"/>
+                </svg>
+              </button>
+            </div>
+
+            <label class="label">
+              <input id="signup-terms" type="checkbox" /> Eu li e aceito os Termos de Uso
+            </label>
+
+            <div id="signup-help" class="help" aria-live="polite"></div>
+
+            <button id="signup-continue" class="btn btn-primary" type="submit">Continuar</button>
+          </form>
+
+          <div class="switcher">
+            <button id="back-to-login" class="link" type="button" data-action="back-login">Voltar para o login</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOME VIEW (aplicativo após login) -->
+      <section id="home-view" class="home hidden" hidden aria-hidden="true" role="region" aria-labelledby="home-title" style="display:none">
+        <h1 id="home-title" class="sr-only">Início</h1>
+
+        <!-- Tabs superiores -->
+        <div class="tabs" role="tablist" aria-label="Navegação superior">
+          <button id="tab-services-btn" class="tab active" role="tab" aria-selected="true" aria-controls="tab-services">
+            <span class="tab-icon">🛠</span>
+            <span class="tab-text">Serviços</span>
+          </button>
+          <button id="tab-requests-btn" class="tab" role="tab" aria-selected="false" aria-controls="tab-requests">
+            <span class="tab-icon">📋</span>
+            <span class="tab-text">Solicitações</span>
+          </button>
+        </div>
+
+        <!-- Barra de busca e histórico -->
+        <div class="search-section">
+          <form id="search-form" class="search-form" role="search" aria-label="Pesquisar">
+            <div class="search-input-wrapper">
+              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+              <input id="search-input" class="search-input" type="search" inputmode="search" placeholder="Pesquisar algum serviço..." aria-label="Pesquisar algum serviço" />
+            </div>
+          </form>
+          <div class="search-history" id="search-history" aria-live="polite"></div>
+        </div>
+
+        <!-- Painéis das tabs -->
+        <div id="tab-services" class="tab-panel" role="tabpanel" aria-labelledby="tab-services-btn">
+          <div class="section-header">
+            <h2 class="section-title">Sugestões</h2>
+            <button id="view-all-suggestions" class="view-all" type="button" aria-label="Ver todas as sugestões">Ver Tudo</button>
+          </div>
+          <div id="suggestions-carousel" class="carousel" aria-label="Sugestões de serviços" tabindex="0">
+            <button class="carousel-arrow prev" type="button" aria-label="Anterior">‹</button>
+            <div class="carousel-viewport">
+              <div class="carousel-track">
+                <!-- Itens do carrossel: emoji + nome -->
+                <button class="suggestion-card" type="button"><span class="emoji">🧹</span><span class="label">Limpeza Doméstica</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🌿</span><span class="label">Serviços de Jardineiro</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🧰</span><span class="label">Montador de móveis</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🔧</span><span class="label">Marido de Aluguel</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🎨</span><span class="label">Pintura</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🚽</span><span class="label">Desentupimento</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💡</span><span class="label">Eletricista</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💧</span><span class="label">Encanador</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🐀</span><span class="label">Controle de Pragas</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💈</span><span class="label">Cabelo/Barba</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💅</span><span class="label">Manicure/Pedicure</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🏋️‍♂️</span><span class="label">Personal Trainer</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💄</span><span class="label">Maquiagem</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🚗</span><span class="label">Automotivos</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">⚙️</span><span class="label">Mecânico</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🚗💦</span><span class="label">Lavagem a Seco</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🐕</span><span class="label">Adestrador</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">📸</span><span class="label">Fotógrafo</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🏊‍♂️</span><span class="label">Limpeza de Piscinas</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🛋️</span><span class="label">Limpeza de Sofá</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">💻</span><span class="label">Programador</span></button>
+                <button class="suggestion-card" type="button"><span class="emoji">🧱</span><span class="label">Pedreiro</span></button>
+              </div>
+            </div>
+            <button class="carousel-arrow next" type="button" aria-label="Próximo">›</button>
+          </div>
+
+            <!-- Modal / painel com todos os serviços (escondido por padrão) -->
+            <section id="all-services-modal" class="modal hidden" aria-hidden="true">
+              <div id="all-services-backdrop" class="modal-backdrop" tabindex="-1"></div>
+              <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Todos os serviços">
+                <header class="modal-header">
+                  <h3 class="modal-title">Todos os serviços</h3>
+                  <button id="close-all-services" class="icon-btn" aria-label="Fechar">✕</button>
+                </header>
+                <div id="services-list" class="services-list" tabindex="0">
+                  <!-- Cards serão gerados dinamicamente pelo JS --></div>
+              </div>
+            </section>
+
+          <!-- Card de recrutamento -->
+          <div class="recruit-card" role="note">
+            <p>Tem alguma habilidade, talento ou negócio?</p>
+            <p>Venha se tornar um:</p>
+            <strong class="brand">NÔMMAD</strong>
+            <div class="cta">
+              <button class="btn btn-brand-small" type="button">Saiba mais</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-requests" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-requests-btn" aria-hidden="true">
+          <div class="empty">
+            <p>Você ainda não tem solicitações.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navegação inferior -->
+      <nav id="bottom-nav" class="navbar hidden" hidden aria-hidden="true" aria-label="Navegação inferior" style="display:none">
+        <button id="home-tab-btn" class="nav-item active" type="button" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 10.5L12 3l9 7.5"/>
+            <path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/>
+            <path d="M9 20v-6h6v6"/>
+          </svg>
+          <span class="nav-label">Início</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="8" height="8" rx="2"/>
+            <rect x="13" y="3" width="8" height="8" rx="2"/>
+            <rect x="3" y="13" width="8" height="8" rx="2"/>
+            <rect x="13" y="13" width="8" height="8" rx="2"/>
+          </svg>
+          <span class="nav-label">Em andamento</span>
+        </button>
+        <button id="chat-tab-btn" class="nav-item" type="button">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12a8 8 0 1 0-4.9 7.4L21 21l-1.6-4.9A8 8 0 0 0 21 12z"/>
+          </svg>
+          <span class="nav-label">Chat</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21a8 8 0 0 1 16 0"/>
+          </svg>
+          <span class="nav-label">Perfil</span>
+        </button>
+      </nav>
+
+    </main>
+    <!-- Chat screens (outside main to avoid clipping and stacking issues) -->
+    <section id="chats-list" class="chat-list hidden" aria-hidden="true">
+      <header class="chat-list-header">
+        <button id="close-chats" class="icon-btn" aria-label="Fechar chat">✕</button>
+        <h2 class="chat-list-title">Mensagens</h2>
+      </header>
+      <div class="chats-container">
+        <!-- Demo conversation item -->
+        <button class="chat-item" data-chat-id="demo-1" type="button">
+          <div class="chat-item-avatar">👷</div>
+          <div class="chat-item-body">
+            <div class="chat-item-top">
+              <span class="chat-item-name">Prestador de Serviço Exemplo</span>
+              <span class="chat-item-time">agora</span>
+            </div>
+            <div class="chat-item-last">Olá! Como posso ajudar você hoje?</div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section id="conversation-view" class="chat hidden" aria-hidden="true">
+      <header class="chat-header">
+        <div class="chat-header-info">
+          <button id="back-to-chats" class="icon-btn chat-back" aria-label="Voltar">&lt;</button>
+          <div class="chat-avatar">👷</div>
+          <div class="chat-title">Prestador de Serviço Exemplo</div>
+          <!-- visual green dot for online status; keep sr-only text for screen readers -->
+          <div class="chat-status" aria-hidden="false">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="sr-only">Online</span>
+          </div>
+        </div>
+  <button id="close-conversation" class="icon-btn chat-close" aria-label="Fechar">✕</button>
+      </header>
+      <div id="conversation-messages" class="chat-messages" role="log" aria-live="polite"></div>
+
+      <form id="conversation-input-form" class="chat-input-form" action="javascript:void(0)">
+        <input id="conversation-input" class="chat-input" type="text" placeholder="Escreva uma mensagem..." autocomplete="off" />
+        <button class="chat-send-btn" aria-label="Enviar">Enviar</button>
+      </form>
+    </section>
+
+  <!-- app.js is loaded with defer in the head to ensure DOM is ready before execution -->
+  </body>
+  </html>
+
