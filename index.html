@@ -265,9 +265,18 @@
         </div>
 
         <div id="tab-requests" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-requests-btn" aria-hidden="true">
-          <div class="empty">
-            <p>Você ainda não tem solicitações.</p>
+          <header class="proposals-header">
+            <h2 class="section-title">Propostas Recebidas</h2>
+            <div class="service-filter">
+              <select id="proposal-service-filter" aria-label="Filtrar por serviço">
+                <option value="all">Todos os serviços</option>
+              </select>
+            </div>
+          </header>
+          <div id="proposals-empty" class="empty" aria-hidden="false">
+            <p>Nenhuma proposta ainda. Os profissionais estão preparando respostas.</p>
           </div>
+          <ul id="proposals-list" class="proposals-list" role="list" aria-live="polite"></ul>
         </div>
       </section>
 
