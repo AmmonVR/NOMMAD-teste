@@ -61,6 +61,105 @@ function initAuthScreen() {
   const carouselTrack = document.querySelector('#suggestions-carousel .carousel-track');
   const arrowPrev = document.querySelector('#suggestions-carousel .carousel-arrow.prev');
   const arrowNext = document.querySelector('#suggestions-carousel .carousel-arrow.next');
+  // ==== ELEMENTOS DA TELA DE PERFIL (recém adicionada no HTML) ====
+  const profileTabBtn = document.getElementById('profile-tab-btn'); // Botão "Perfil" na barra inferior
+  const profileView = document.getElementById('profile-view');      // Container da tela de perfil
+  const profileBackBtn = document.getElementById('profile-back');   // Botão de voltar
+  const profileEditBtn = document.getElementById('edit-profile-btn');
+  const profileLogoutBtn = document.getElementById('profile-logout');
+  const infoNameEl = document.getElementById('info-name');
+  const infoPhoneEl = document.getElementById('info-phone');
+  const infoEmailEl = document.getElementById('info-email');
+  // Guardamos também o nome exibido em destaque (hero)
+  const profileNameDisplay = document.getElementById('profile-name-display');
+
+  /* =============================================================
+     PERFIL — Simulação simples
+     Objetivo: mostrar e esconder a tela de perfil quando o botão
+     "Perfil" é clicado, sem perder outras funcionalidades.
+     ============================================================= */
+
+  // Estado: lembramos qual "tela" estava visível antes de abrir o perfil
+  let previousMainView = null; // valores possíveis: 'auth' | 'home' | 'chats' | 'conversation'
+
+  // Função utilitária para verificar se um elemento está visível (não tem class 'hidden')
+  function isVisible(el) { return el && !el.classList.contains('hidden'); }
+
+  // Abre a tela de perfil
+  function openProfileView() {
+    // Descobre onde o usuário estava
+    if (isVisible(authSection)) previousMainView = 'auth';
+    else if (isVisible(conversationView)) previousMainView = 'conversation';
+    else if (isVisible(chatsList)) previousMainView = 'chats';
+    else previousMainView = 'home';
+
+    // Esconde outras views principais
+    setHidden(authSection, true);
+    setHidden(homeView, true);
+    setHidden(chatsList, true);
+    setHidden(conversationView, true);
+
+    // Mostra a tela de perfil
+    setHidden(profileView, false);
+    setHidden(bottomNav, false); // mantém a barra inferior
+    setActiveNav(profileTabBtn); // botão fica visualmente ativo
+  }
+
+  // Fecha a tela de perfil e retorna para a tela anterior
+  function closeProfileView() {
+    setHidden(profileView, true);
+    if (previousMainView === 'auth') {
+      // volta para login/cadastro
+      setHidden(authSection, false);
+      setHidden(bottomNav, true); // barra não aparece em auth
+    } else if (previousMainView === 'chats') {
+      openChatsList();
+      setActiveNav(chatTabBtn);
+    } else if (previousMainView === 'conversation') {
+      setHidden(conversationView, false);
+      setActiveNav(chatTabBtn);
+    } else {
+      // padrão: home
+      showHome();
+      setActiveNav(homeTabBtn);
+    }
+    previousMainView = null; // limpa o estado
+  }
+
+  // Simulação de "editar perfil": apenas altera o nome mostrado.
+  function simulateEditProfile() {
+    // Para aprender: prompt abre uma pequena caixa para o usuário digitar algo.
+    const novoNome = prompt('Digite um novo nome para simular edição:', infoNameEl?.textContent || '');
+    if (!novoNome) return; // se cancelar ou deixar vazio, não faz nada
+    if (infoNameEl) infoNameEl.textContent = novoNome;
+    if (profileNameDisplay) profileNameDisplay.textContent = novoNome;
+    alert('Nome atualizado somente na interface (sem backend ainda).');
+  }
+
+  // Logout simples: volta para a tela de login e "reseta" estado.
+  function simulateLogout() {
+    alert('Saindo da conta (simulação).');
+    // Fecha perfil, mostra auth e esconde navbar
+    setHidden(profileView, true);
+    switchToLogin();
+    setHidden(bottomNav, true);
+  }
+
+  // Liga eventos
+  profileTabBtn?.addEventListener('click', (e) => { e.preventDefault(); openProfileView(); });
+  profileBackBtn?.addEventListener('click', (e) => { e.preventDefault(); closeProfileView(); });
+  profileEditBtn?.addEventListener('click', (e) => { e.preventDefault(); simulateEditProfile(); });
+  profileLogoutBtn?.addEventListener('click', (e) => { e.preventDefault(); simulateLogout(); });
+
+  // Garantir que ao clicar em outros botões da navbar enquanto o perfil está aberto, ele seja fechado.
+  bottomNav?.addEventListener('click', (e) => {
+    const targetBtn = e.target.closest?.('.nav-item');
+    if (!targetBtn) return;
+    // Se o botão não for o de perfil e a tela de perfil está visível, fecha.
+    if (profileView && !profileView.classList.contains('hidden') && targetBtn !== profileTabBtn) {
+      closeProfileView();
+    }
+  });
 
   // Estado simples para saber se estamos no modo "login" ou "cadastro".
   // Começamos no modo "login" (poderia ser configurável).
@@ -252,13 +351,42 @@ function initAuthScreen() {
     return value.replace(/\D/g, '').slice(0, 12);
   }
 
+  // Formata telefone BR (básico): (11) 98888-7777 ou (11) 3888-7777
+  // Explicação: recebemos apenas dígitos. Aplicamos partes conforme o tamanho:
+  //  - 0-2 dígitos: apenas abre parêntese
+  //  - 3-6 dígitos: (DD) XXXX
+  //  - 7-10 dígitos: (DD) 9XXXX-XXXX ou (DD) XXXX-XXXX
+  function formatBrazilPhone(rawDigits) {
+    const d = rawDigits.replace(/\D/g, '');
+    if (d.length === 0) return '';
+    const dd = d.slice(0, 2); // DDD
+    const rest = d.slice(2);
+    if (rest.length === 0) return `(${dd}`; // ainda digitando DDD
+    // Celular (9 dígitos começando com 9) ou fixo (8 dígitos)
+    if (rest.length <= 4) {
+      return `(${dd}) ${rest}`;
+    } else if (rest.length <= 8) {
+      // até 8 -> decide se é fixo (8) ou celular sem 9 ainda
+      if (rest.length === 8 || rest.length === 7) {
+        return `(${dd}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+      }
+      return `(${dd}) ${rest}`;
+    } else {
+      // 9 ou mais
+      return `(${dd}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+    }
+  }
+
   countryCodeInput?.addEventListener('input', () => {
     countryCodeInput.value = sanitizeCountryCode(countryCodeInput.value);
     clearErrors();
   });
 
   phoneInput?.addEventListener('input', () => {
-    phoneInput.value = sanitizePhone(phoneInput.value);
+    // 1. Limpamos para obter só dígitos
+    const digits = sanitizePhone(phoneInput.value);
+    // 2. Aplicamos formatação amigável
+    phoneInput.value = formatBrazilPhone(digits);
     clearErrors();
   });
 
@@ -303,7 +431,8 @@ function initAuthScreen() {
     clearErrors();
   });
   signupPhone?.addEventListener('input', () => {
-    signupPhone.value = sanitizePhone(signupPhone.value);
+    const digits = sanitizePhone(signupPhone.value);
+    signupPhone.value = formatBrazilPhone(digits);
     clearErrors();
   });
 
