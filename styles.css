@@ -13,8 +13,8 @@
   --color-surface: #1C1C1C;       /* cartões e elementos de destaque */
   --color-text: #EEEEEE;          /* texto primário (alto contraste no dark) */
   --color-text-dim: #BDBDBD;      /* texto secundário/descrições */
-  --color-accent-orange: #FF9A00; /* cor de ação/destaque (1) */
-  --color-accent-blue: #00C3FF;   /* cor de ação/destaque (2) */
+  --color-accent-orange: #ffe556; /* cor de ação/destaque (1) */
+  --color-accent-blue: #00bcf0;   /* cor de ação/destaque (2) */
   --color-danger: #FF4D4F;        /* mensagens de erro/alerta */
   --color-divider: #2A2A2A;       /* linhas/separadores sutis */
 
@@ -97,6 +97,78 @@ body {
 
 /* Utilitário para esconder seções (signup/login) sem remover do fluxo de acessibilidade */
 .hidden { display: none; }
+
+/* ============================= */
+/* PROPOSTAS RECEBIDAS (Requests) */
+/* ============================= */
+/* Estrutura da lista de propostas (aba Propostas). */
+.proposals-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 14px;
+}
+.service-filter select {
+  background: #151515;
+  border: 1px solid var(--color-divider);
+  color: var(--color-text-dim);
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.service-filter select:focus { outline: 2px solid var(--color-accent-blue); outline-offset: 2px; }
+
+.proposals-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 2px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.proposal-card {
+  background: #181818;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, transform .18s;
+}
+.proposal-card:hover,
+.proposal-card:focus-within { border-color: rgba(255,255,255,0.25); background: #1d1d1d; }
+
+.proposal-main-click-area { display: flex; justify-content: space-between; gap: 12px; }
+.proposal-left { display: flex; gap: 10px; flex: 1; min-width: 0; }
+.proposal-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #2a2a2a; flex-shrink: 0; }
+.proposal-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.proposal-name { font-weight: 600; font-size: 0.95rem; color: #fff; line-height: 1.1; }
+.proposal-rating { font-size: 0.65rem; display: flex; align-items: center; gap: 4px; color: #bbb; }
+.proposal-rating .stars { color: #ffe556; letter-spacing: 1px; font-size: 0.60rem; }
+.proposal-service { font-size: 0.6rem; font-weight: 600; color: var(--color-accent-blue); letter-spacing: .5px; text-transform: uppercase; }
+.proposal-service-description { margin-top: 4px; font-size: 0.62rem; line-height: 1.25; color: var(--color-text-dim); background: #141414; border: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 10px; }
+.proposal-extra .tag { display: inline-block; background: #222; border: 1px solid #303030; color: #bbb; font-size: 0.55rem; padding: 2px 6px; border-radius: 12px; letter-spacing: .5px; text-transform: uppercase; }
+.proposal-price-block { text-align: right; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.proposal-price { font-size: 1.05rem; font-weight: 600; color: var(--color-accent-orange); }
+.proposal-fee-hint { font-size: 0.55rem; color: #888; }
+
+.proposal-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.06); }
+.btn-accept, .btn-reject { font: inherit; border-radius: 10px; padding: 6px 14px; font-size: 0.68rem; cursor: pointer; font-weight: 600; letter-spacing: .3px; transition: background .2s, color .2s, border-color .2s; border: 1px solid transparent; }
+.btn-accept { background: linear-gradient(135deg,#ffe556,#ffec7f); color: #111; border-color: #ffe556; }
+.btn-accept:hover { filter: brightness(1.05); }
+.btn-reject { background: #242424; color: #bbb; border-color: #2f2f2f; }
+.btn-reject:hover { background: #2e2e2e; color: #eee; border-color: #444; }
+
+/* Estados visuais */
+.proposal-card.accepted { outline: 2px solid #2ecc71; background: #1e2a21; border-color: #2ecc71; }
+.proposal-card.accepted::after { content: 'ACEITA'; position: absolute; top: 6px; right: 10px; font-size: 0.55rem; letter-spacing: 1px; background: #2ecc71; color: #0d1c11; padding: 3px 6px; border-radius: 6px; font-weight: 700; }
+.proposal-card.fading { opacity: 0; transform: scale(.97); transition: opacity .25s, transform .25s; }
 
 /* ============================= */
 /* TELA DE PERFIL (Profile View) */
