@@ -52,6 +52,10 @@ function initAuthScreen() {
   const tabRequestsBtn = document.getElementById('tab-requests-btn');
   const tabServices = document.getElementById('tab-services');
   const tabRequests = document.getElementById('tab-requests');
+  // PROPOSTAS (lista de propostas recebidas)
+  const proposalsListEl = document.getElementById('proposals-list');
+  const proposalsEmptyEl = document.getElementById('proposals-empty');
+  const proposalServiceFilter = document.getElementById('proposal-service-filter');
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const searchHistory = document.getElementById('search-history');
@@ -595,6 +599,8 @@ function initAuthScreen() {
       tabServices?.setAttribute('aria-hidden', 'true');
       tabRequests?.classList.remove('hidden');
       tabRequests?.setAttribute('aria-hidden', 'false');
+      // Ao abrir a aba de propostas, renderiza lista
+      renderProposalsView();
     }
   }
 
@@ -636,6 +642,162 @@ function initAuthScreen() {
     e && e.preventDefault();
     openAllServices();
   }
+
+  /* =============================
+     PROPOSTAS RECEBIDAS (mock)
+     ============================= */
+  // Mock simples de propostas; em um backend real viria via fetch.
+  let proposals = [
+    {
+      id: 'P1', serviceId: 'S1', serviceTitle: 'Pintura de Quarto',
+      serviceDescription: 'Pintar 1 quarto (12m²) em cor branca lavável, com preparação simples das paredes.',
+      professionalId: 'U10', professionalName: 'João Lima', avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      rating: 4.8, ratingCount: 52, basePrice: 350.00, currency: 'BRL', deliveryEstimateDays: 2, feePercent: 0.10, status: 'pending'
+    },
+    {
+      id: 'P2', serviceId: 'S1', serviceTitle: 'Pintura de Quarto',
+      serviceDescription: 'Incluso: cobertura de piso, 2 demãos de tinta acrílica e limpeza básica ao final.',
+      professionalId: 'U11', professionalName: 'Carlos Mendes', avatar: 'https://randomuser.me/api/portraits/men/41.jpg',
+      rating: 4.6, ratingCount: 31, basePrice: 320.00, currency: 'BRL', deliveryEstimateDays: 3, feePercent: 0.10, status: 'pending'
+    },
+    {
+      id: 'P3', serviceId: 'S2', serviceTitle: 'Montagem de Móveis',
+      serviceDescription: 'Montar 1 guarda-roupa 6 portas e 1 cômoda pequena. Cliente já deixou peças organizadas.',
+      professionalId: 'U12', professionalName: 'Marina Souza', avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
+      rating: 4.9, ratingCount: 88, basePrice: 180.00, currency: 'BRL', deliveryEstimateDays: 1, feePercent: 0.12, status: 'pending'
+    }
+  ];
+
+  // Popula filtro de serviços com base no conjunto de serviceId
+  function populateServiceFilter() {
+    if (!proposalServiceFilter) return;
+    const unique = [...new Set(proposals.map(p => p.serviceId))];
+    // Limpa exceto 'all'
+    const current = proposalServiceFilter.value;
+    proposalServiceFilter.innerHTML = '<option value="all">Todos os serviços</option>' + unique.map(id => `<option value="${id}">Serviço ${id}</option>`).join('');
+    if ([...proposalServiceFilter.options].some(o => o.value === current)) proposalServiceFilter.value = current;
+  }
+
+  function formatPriceBRL(value) {
+    try { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); } catch { return 'R$ ' + value.toFixed(2); }
+  }
+
+  function buildProposalCardHTML(p) {
+    const fee = p.basePrice * p.feePercent;
+    return `
+      <div class="proposal-main-click-area">
+        <div class="proposal-left">
+          <img class="proposal-avatar" src="${p.avatar}" alt="Foto de ${p.professionalName}">
+          <div class="proposal-info">
+            <div class="proposal-name">${p.professionalName}</div>
+            <div class="proposal-service" title="${p.serviceTitle}">${p.serviceTitle}</div>
+            <div class="proposal-rating"><span class="stars">★★★★★</span><span class="rating-val">${p.rating.toFixed(1)}</span><span class="rating-count">(${p.ratingCount})</span></div>
+            <div class="proposal-extra"><span class="tag">Prazo: ${p.deliveryEstimateDays} dia${p.deliveryEstimateDays>1?'s':''}</span></div>
+          </div>
+        </div>
+        <div class="proposal-price-block">
+          <div class="proposal-price">${formatPriceBRL(p.basePrice)}</div>
+          <div class="proposal-fee-hint">Taxa: ${formatPriceBRL(fee)}</div>
+        </div>
+      </div>
+      <div class="proposal-service-description">${p.serviceDescription}</div>
+      <div class="proposal-actions">
+        <button class="btn-accept" type="button" data-action="accept">Aceitar</button>
+        <button class="btn-reject" type="button" data-action="reject">Recusar</button>
+      </div>`;
+  }
+
+  function renderProposals(list) {
+    if (!proposalsListEl || !proposalsEmptyEl) return;
+    proposalsListEl.innerHTML = '';
+    if (!list.length) {
+      proposalsEmptyEl.classList.remove('hidden');
+      proposalsEmptyEl.setAttribute('aria-hidden','false');
+      return;
+    }
+    proposalsEmptyEl.classList.add('hidden');
+    proposalsEmptyEl.setAttribute('aria-hidden','true');
+    list.forEach(p => {
+      const li = document.createElement('li');
+      li.className = 'proposal-card';
+      li.setAttribute('role','listitem');
+      li.dataset.proposalId = p.id;
+      li.dataset.serviceId = p.serviceId;
+      li.innerHTML = buildProposalCardHTML(p);
+      // Clique no corpo abre perfil profissional (futuro: tela dedicada)
+      li.querySelector('.proposal-main-click-area')?.addEventListener('click', () => {
+        alert('Abrir perfil completo de ' + p.professionalName + ' (implementação futura).');
+      });
+  // Botão aceitar
+      li.querySelector('[data-action="accept"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        acceptProposal(p.id);
+      });
+      // Botão recusar
+      li.querySelector('[data-action="reject"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        rejectProposal(p.id);
+      });
+      proposalsListEl.appendChild(li);
+    });
+  }
+
+  function filterProposals() {
+    const serviceFilter = proposalServiceFilter?.value || 'all';
+    const visible = proposals.filter(p => p.status === 'pending' && (serviceFilter === 'all' || p.serviceId === serviceFilter));
+    renderProposals(visible);
+  }
+
+  function renderProposalsView() {
+    populateServiceFilter();
+    filterProposals();
+  }
+
+  function ensureChatForProfessional(professionalId, name, avatar) {
+    // Checa se já existe um chat para esse profissional (simplificado)
+    const existing = document.querySelector(`.chat-item[data-chat-id="prof-${professionalId}"]`);
+    if (existing) return;
+    const container = document.querySelector('.chats-container');
+    if (!container) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chat-item';
+    btn.dataset.chatId = 'prof-' + professionalId;
+    btn.innerHTML = `
+      <div class="chat-item-avatar">${avatar ? '' : '👷'}</div>
+      <div class="chat-item-body">
+        <div class="chat-item-top">
+          <span class="chat-item-name">${name}</span>
+          <span class="chat-item-time">agora</span>
+        </div>
+        <div class="chat-item-last">Chat liberado após aceite.</div>
+      </div>`;
+    container.prepend(btn);
+  }
+
+  function acceptProposal(proposalId) {
+    const p = proposals.find(x => x.id === proposalId);
+    if (!p || p.status !== 'pending') return;
+    p.status = 'accepted';
+    // Rejeita outras do mesmo serviço
+    proposals.filter(x => x.serviceId === p.serviceId && x.id !== p.id && x.status === 'pending').forEach(x => x.status = 'rejected');
+    // Gera taxa
+    const fee = p.basePrice * p.feePercent;
+    const total = p.basePrice + fee;
+    console.log('Taxa serviço:', fee.toFixed(2), 'Total cliente:', total.toFixed(2));
+    ensureChatForProfessional(p.professionalId, p.professionalName, p.avatar);
+    alert('Proposta aceita! Chat liberado.');
+    renderProposalsView();
+  }
+
+  function rejectProposal(proposalId) {
+    const p = proposals.find(x => x.id === proposalId);
+    if (!p || p.status !== 'pending') return;
+    p.status = 'rejected';
+    renderProposalsView();
+  }
+
+  proposalServiceFilter?.addEventListener('change', filterProposals);
 
   /* =====================
      CHAT — lista e conversa
