@@ -67,11 +67,46 @@ function initAuthScreen() {
   const profileBackBtn = document.getElementById('profile-back');   // Botão de voltar
   const profileEditBtn = document.getElementById('edit-profile-btn');
   const profileLogoutBtn = document.getElementById('profile-logout');
-  const infoNameEl = document.getElementById('info-name');
+  // info-name removido da lista (nome já aparece em destaque no topo)
+  const infoNameEl = null;
   const infoPhoneEl = document.getElementById('info-phone');
   const infoEmailEl = document.getElementById('info-email');
   // Guardamos também o nome exibido em destaque (hero)
   const profileNameDisplay = document.getElementById('profile-name-display');
+
+  /* =============================================================
+     FUNÇÕES DE MASCARAMENTO (censura leve para exibir parcialmente)
+     ============================================================= */
+  // Exemplo desejado telefone: (11) 98****** — mantemos DDD + 2 primeiros dígitos
+  function maskPhonePretty(raw) {
+    if (!raw) return '';
+    const digits = String(raw).replace(/\D/g, '');
+    if (digits.length < 4) return raw; // pouco para mascarar
+    const ddd = digits.slice(0, 2);
+    const firstTwo = digits.slice(2, 4); // 2 primeiros depois do DDD
+    return `(${ddd}) ${firstTwo}******`;
+  }
+  // Exemplo desejado email: Am********@email.com (mantém 2 iniciais + resto mascarado até @)
+  function maskEmail(raw) {
+    if (!raw || !raw.includes('@')) return raw;
+    const [user, domain] = raw.split('@');
+    if (!user) return raw;
+    const visible = user.slice(0, 2);
+    // Garante ao menos 4 asteriscos para não ficar curto demais
+    const starsCount = Math.max(4, user.length - 2);
+    return `${visible}${'*'.repeat(starsCount)}@${domain}`;
+  }
+  // Aplica a máscara sem perder os valores originais (armazenamos em data-original)
+  function applyProfileMask() {
+    if (infoPhoneEl) {
+      if (!infoPhoneEl.dataset.original) infoPhoneEl.dataset.original = infoPhoneEl.textContent.trim();
+      infoPhoneEl.textContent = maskPhonePretty(infoPhoneEl.dataset.original);
+    }
+    if (infoEmailEl) {
+      if (!infoEmailEl.dataset.original) infoEmailEl.dataset.original = infoEmailEl.textContent.trim();
+      infoEmailEl.textContent = maskEmail(infoEmailEl.dataset.original);
+    }
+  }
 
   /* =============================================================
      PERFIL — Simulação simples
@@ -103,6 +138,8 @@ function initAuthScreen() {
     setHidden(profileView, false);
     setHidden(bottomNav, false); // mantém a barra inferior
     setActiveNav(profileTabBtn); // botão fica visualmente ativo
+    // Aplica censura a telefone e email exibidos
+    applyProfileMask();
   }
 
   // Fecha a tela de perfil e retorna para a tela anterior
@@ -129,9 +166,8 @@ function initAuthScreen() {
   // Simulação de "editar perfil": apenas altera o nome mostrado.
   function simulateEditProfile() {
     // Para aprender: prompt abre uma pequena caixa para o usuário digitar algo.
-    const novoNome = prompt('Digite um novo nome para simular edição:', infoNameEl?.textContent || '');
+  const novoNome = prompt('Digite um novo nome para simular edição:', profileNameDisplay?.textContent || '');
     if (!novoNome) return; // se cancelar ou deixar vazio, não faz nada
-    if (infoNameEl) infoNameEl.textContent = novoNome;
     if (profileNameDisplay) profileNameDisplay.textContent = novoNome;
     alert('Nome atualizado somente na interface (sem backend ainda).');
   }
