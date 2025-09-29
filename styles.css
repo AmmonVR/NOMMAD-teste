@@ -155,6 +155,19 @@ body {
 
 .profile-menu { display: grid; gap: 10px; }
 .menu-item { text-align: left; background: #181818; border: 1px solid var(--color-divider); padding: 14px 16px; border-radius: 12px; color: var(--color-accent-blue); font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.menu-item:has(> span) { display: flex; align-items: center; gap: 8px; }
+.wallet-item { color: var(--color-text); }
+.wallet-item .menu-icon {
+  width: 22px;
+  height: 22px;
+  stroke: var(--color-text-dim);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wallet-item:hover .menu-icon { stroke: var(--color-text); }
+.wallet-item .menu-text { font-size: 14px; font-weight: 600; }
 .menu-item:hover { background: #1f1f1f; }
 
 .danger-zone { padding-top: 6px; }
@@ -784,6 +797,47 @@ input[type="checkbox"] {
 .btn-brand-small:hover { filter: brightness(1.05); }
 
 /* (Removido bloco duplicado antigo da navbar para evitar conflito) */
+
+/* Botão "Editar Perfil" discreto */
+#edit-profile-btn {
+  background: rgba(255,229,86,0.07);
+  color: #ffe556;
+  border: 1px solid #ffe556;
+  padding: 4px 14px;
+  font-size: 0.72rem;
+  line-height: 1.1;
+  font-weight: 500;
+  border-radius: 18px;
+  cursor: pointer;
+  letter-spacing: .3px;
+  transition: background .2s, color .2s, border-color .2s, transform .15s;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+#edit-profile-btn::before { content: '✏️'; font-size: .85rem; line-height: 1; }
+#edit-profile-btn:hover, #edit-profile-btn:focus { background: #FF9A00; color: #111; outline: none; }
+#edit-profile-btn:active { transform: translateY(1px); }
+#edit-profile-btn.btn, #edit-profile-btn.btn-primary { all: unset; /* limpa estilos herdados se sobrou classes */ }
+
+/* Botão de sair (logout) mais discreto */
+.logout-link {
+  background: transparent;
+  border: 1px solid rgba(255,77,79,0.35);
+  color: #ff5e61;
+  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  letter-spacing: .25px;
+  transition: background .18s, color .18s, border-color .18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.logout-link:hover, .logout-link:focus { background: rgba(255,77,79,0.12); color: #ff7b7d; outline: none; }
+.logout-link:active { background: rgba(255,77,79,0.2); }
 
 
 /* ===================== */
