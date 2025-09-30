@@ -53,16 +53,47 @@ function initAuthScreen() {
   const proposalsBadge = document.getElementById('proposals-badge');
   const tabServices = document.getElementById('tab-services');
   const tabRequests = document.getElementById('tab-requests');
-  // PROPOSTAS (lista de propostas recebidas)
+  const searchForm = document.getElementById('search-form');
+  const searchInput = document.getElementById('search-input');
+  const searchHistory = document.getElementById('search-history');
+  // Propostas (listas e filtros)
   const proposalsListEl = document.getElementById('proposals-list');
   const proposalsEmptyEl = document.getElementById('proposals-empty');
   const acceptedSectionEl = document.getElementById('accepted-proposals-section');
   const acceptedListEl = document.getElementById('accepted-proposals-list');
   const acceptedEmptyEl = document.getElementById('accepted-empty');
   const proposalServiceFilter = document.getElementById('proposal-service-filter');
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  const searchHistory = document.getElementById('search-history');
+
+  // Results view elements
+  const resultsView = document.getElementById('results-view');
+  const resultsBackBtn = document.getElementById('results-back-btn');
+  const resultsSearchForm = document.getElementById('results-search-form');
+  const resultsSearchInput = document.getElementById('results-search-input');
+  const resultsTopicLine = document.getElementById('results-topic-line');
+  const resultsTopicText = document.getElementById('results-topic-text');
+  const changeSearchBtn = document.getElementById('change-search-btn');
+  const changeLocationBtn = document.getElementById('change-location-btn');
+  const currentLocationLabel = document.getElementById('current-location-label');
+  const geoFiltersPanel = document.getElementById('geo-filters-panel');
+  const searchResultsEl = document.getElementById('search-results');
+  const geoLocationInput = document.getElementById('geo-location-input');
+  const geoRadiusInput = document.getElementById('geo-radius-input');
+  const geoApplyBtn = document.getElementById('geo-apply-btn');
+  const geoClearBtn = document.getElementById('geo-clear-btn');
+  const geoActiveHint = document.getElementById('geo-active-hint');
+
+  // Estado geo selecionado (obrigatório agora: sem local não há resultados)
+  let activeGeoCenter = null; // {lat,lng,cidade,uf}
+  let activeGeoRadiusKm = null; // km
+  const GEO_STORAGE_KEY = 'nommad:userGeoCenter';
+  const GEO_RADIUS_KEY = 'nommad:userGeoRadiusKm';
+  let lastSearchQuery = '';
+  // Seleção múltipla de profissionais
+  const selectionBar = document.getElementById('selection-bar');
+  const selectionCountEl = document.getElementById('selection-count');
+  const selectionContinueBtn = document.getElementById('selection-continue-btn');
+  const selectedProfessionals = new Set();
+  let selectedCategory = null; // restringe seleção a uma categoria
   // Carousel
   const carousel = document.getElementById('suggestions-carousel');
   const carouselViewport = document.querySelector('#suggestions-carousel .carousel-viewport');
@@ -576,9 +607,10 @@ function initAuthScreen() {
     // Troca header: esconde logo, mostra título "Início"
     setHidden(headerLogo, true);
     setHidden(headerTitle, false);
+    if (headerTitle) headerTitle.textContent = 'Início';
     // foca na busca para UX rápida
     setTimeout(() => searchInput?.focus(), 0);
-    // Atualiza badge de propostas ao entrar na home
+    // Atualiza badge (se propostas mock existem)
     try { updateProposalsBadge(); } catch(_) {}
   }
 
@@ -630,13 +662,357 @@ function initAuthScreen() {
     });
   }
 
+  // Abre results view e executa busca
+  function openResultsView(initialTerm){
+    if (initialTerm != null) {
+      resultsSearchInput.value = initialTerm;
+    }
+    // anima a saída suave da home
+    if (homeView) {
+      homeView.classList.add('results-hide');
+      setTimeout(()=> setHidden(homeView,true), 220);
+    }
+    // mostra results com classe de entrada
+    setHidden(resultsView, false);
+    resultsView.classList.add('anim-enter');
+    setTimeout(()=> resultsView.classList.remove('anim-enter'), 450);
+    setHidden(bottomNav, false);
+    setHidden(headerLogo, true);
+    setHidden(headerTitle, false);
+    headerTitle.textContent = 'Resultados';
+    setTimeout(()=>resultsSearchInput?.focus(),30);
+    performSearch();
+    if (initialTerm){
+      showResultsTopic(initialTerm);
+    } else {
+      hideResultsTopic();
+    }
+  }
+
+  function closeResultsView(){
+    // animação de saída
+    if (resultsView){
+      resultsView.classList.add('anim-leave');
+      setTimeout(()=>{ resultsView.classList.remove('anim-leave'); setHidden(resultsView,true); }, 260);
+    } else {
+      setHidden(resultsView,true);
+    }
+    showHome();
+    if (homeView){
+      homeView.classList.remove('results-hide');
+      homeView.style.opacity = '1';
+      homeView.style.transform = 'translateY(0)';
+    }
+    if (headerTitle) headerTitle.textContent = 'Início';
+  }
+
   searchForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const term = String(searchInput?.value || '').trim();
     if (!term) return;
     recentSearches.push(term);
     renderSearchHistory();
-    // Futuro: navegar para lista de resultados
+    lastSearchQuery = term;
+    // abre página de resultados
+    openResultsView(term);
+  });
+
+  resultsSearchForm?.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const term = String(resultsSearchInput?.value||'').trim();
+    if (!term) return;
+    lastSearchQuery = term;
+    performSearch();
+  });
+
+  resultsBackBtn?.addEventListener('click', (e)=>{ e.preventDefault(); closeResultsView(); });
+
+  changeLocationBtn?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const visible = !geoFiltersPanel.classList.contains('hidden');
+    if (visible){
+      geoFiltersPanel.classList.add('hidden');
+      geoFiltersPanel.setAttribute('aria-hidden','true');
+    } else {
+      geoFiltersPanel.classList.remove('hidden');
+      geoFiltersPanel.setAttribute('aria-hidden','false');
+      setTimeout(()=>geoLocationInput?.focus(),50);
+    }
+  });
+
+  function clearSearchResults(){ if (searchResultsEl) searchResultsEl.innerHTML=''; }
+
+  function renderSearchResults(list){
+    if (!searchResultsEl) return;
+    if (!list.length){
+      searchResultsEl.innerHTML = '<div class="search-empty">Nenhum profissional encontrado.</div>';
+      return;
+    }
+    const html = list.map(p => {
+      const tags = (p.keywords||[]).slice(0,4).map(t=>`<span>${t}</span>`).join('');
+      const distancia = p.distanciaKm != null ? `<span>${p.distanciaKm.toFixed(1)} km</span>` : '';
+      const selected = selectedProfessionals.has(p.id) ? ' selected' : '';
+      return `
+        <div class="search-result-card${selected}" data-prof-id="${p.id}" data-cat="${p.categoria}" role="button" tabindex="0" aria-label="Selecionar ${p.nome}">
+          <img class="search-result-avatar" src="${p.avatar}" alt="Foto de ${p.nome}">
+          <div class="search-result-body">
+            <div class="search-result-name">${p.nome}</div>
+            <div class="search-result-cat">${p.categoria}</div>
+            <div class="search-result-meta"><span>⭐ ${p.rating.toFixed(1)}</span><span>${p.jobsConcluidos} serviços</span>${distancia}</div>
+            <div class="search-result-tags">${tags}</div>
+          </div>
+          <div class="select-indicator">${selected ? '✓' : '+'}</div>
+        </div>`;
+    }).join('');
+    searchResultsEl.innerHTML = html;
+  }
+
+  async function performSearch(){
+    if (!window.__searchEngine){
+      // tenta novamente em breve (script pode não ter carregado ainda)
+      setTimeout(performSearch, 120);
+      return;
+    }
+    const qEl = resultsView && !resultsView.classList.contains('hidden') ? resultsSearchInput : searchInput;
+    const q = String(qEl?.value||'').trim();
+    lastSearchQuery = q;
+    // Caso não tenha localização, ainda permitimos buscar (sem filtro geo)
+    if (!q){
+      if (activeGeoCenter){
+        const nearby = await window.__searchEngine.searchProfessionals('', activeGeoCenter, activeGeoRadiusKm);
+        renderSearchResults(nearby);
+      } else {
+        // Sem query e sem geo: mostra dica
+        if (searchResultsEl) searchResultsEl.innerHTML = '<div class="search-empty">Digite algo para buscar profissionais.</div>';
+      }
+      updateCurrentLocationLabel();
+      return;
+    }
+    const results = await window.__searchEngine.searchProfessionals(q, activeGeoCenter, activeGeoRadiusKm);
+    renderSearchResults(results);
+    updateCurrentLocationLabel();
+  }
+
+  // Debounce input
+  let searchDebounce = null;
+  searchInput?.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {/* apenas digitação na home, não busca ainda */}, 250);
+  });
+
+  resultsSearchInput?.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => performSearch(), 220);
+  });
+
+  // Clique em resultado (placeholder)
+  searchResultsEl?.addEventListener('click', (e) => {
+    const card = e.target.closest('.search-result-card');
+    if (!card) return;
+    toggleProfessionalSelection(card.dataset.profId, card.getAttribute('data-cat'));
+  });
+
+  // ===== GEO FILTERS =====
+  function updateCurrentLocationLabel(){
+    if (!currentLocationLabel) return;
+    if (!activeGeoCenter){ currentLocationLabel.textContent = 'Defina seu local'; currentLocationLabel.classList.add('need-location'); return; }
+    currentLocationLabel.classList.remove('need-location');
+    currentLocationLabel.textContent = `Local: ${activeGeoCenter.cidade||'Custom'}${activeGeoCenter.uf? '/'+activeGeoCenter.uf:''} • ${activeGeoRadiusKm} km`;
+  }
+
+  function setGeoHint(){
+    if (!geoActiveHint) return;
+    if (!activeGeoCenter){ geoActiveHint.classList.add('hidden'); geoActiveHint.setAttribute('aria-hidden','true'); updateCurrentLocationLabel(); return; }
+    geoActiveHint.classList.remove('hidden');
+    geoActiveHint.setAttribute('aria-hidden','false');
+    geoActiveHint.innerHTML = `Filtro de localização ativo: <strong>${activeGeoCenter.cidade||'Local custom'}${activeGeoCenter.uf? '/'+activeGeoCenter.uf:''}</strong> em raio de <strong>${activeGeoRadiusKm} km</strong>`;
+    updateCurrentLocationLabel();
+  }
+
+  // Simples geocoder fake (mock) — em produção usar API real
+  const mockGeoDB = [
+    {match:['sao paulo','são paulo','sp'], lat:-23.55052, lng:-46.633308, cidade:'São Paulo', uf:'SP'},
+    {match:['pinheiros'], lat:-23.5670, lng:-46.6954, cidade:'São Paulo', uf:'SP'},
+    {match:['moema'], lat:-23.6010, lng:-46.6644, cidade:'São Paulo', uf:'SP'}
+  ];
+  function fakeGeocode(term){
+    term = term.toLowerCase().trim();
+    return mockGeoDB.find(r => r.match.includes(term)) || null;
+  }
+
+  geoApplyBtn?.addEventListener('click', () => {
+    const locTerm = String(geoLocationInput?.value||'').trim();
+    const radius = parseFloat(geoRadiusInput?.value||'');
+    if (!locTerm || !radius){
+      alert('Informe local e raio.');
+      return;
+    }
+    const geo = fakeGeocode(locTerm);
+    if (!geo){
+      alert('Local não reconhecido (mock). Tente: São Paulo, Pinheiros, Moema.');
+      return;
+    }
+    activeGeoCenter = {lat: geo.lat, lng: geo.lng, cidade: geo.cidade, uf: geo.uf};
+    activeGeoRadiusKm = radius;
+    setGeoHint();
+    performSearch();
+    // fecha painel após aplicar
+    geoFiltersPanel?.classList.add('hidden');
+    geoFiltersPanel?.setAttribute('aria-hidden','true');
+  });
+
+  geoClearBtn?.addEventListener('click', () => {
+    activeGeoCenter = null;
+    activeGeoRadiusKm = null;
+    setGeoHint();
+    performSearch();
+    geoFiltersPanel?.classList.add('hidden');
+    geoFiltersPanel?.setAttribute('aria-hidden','true');
+    try { localStorage.removeItem(GEO_STORAGE_KEY); localStorage.removeItem(GEO_RADIUS_KEY); } catch(_) {}
+  });
+
+  // Sem localização inicial: mostra label de necessidade
+  // 1) tenta restaurar localização persistida
+  (function restorePersistedLocation(){
+    try {
+      const saved = localStorage.getItem(GEO_STORAGE_KEY);
+      const savedRadius = localStorage.getItem(GEO_RADIUS_KEY);
+      if (saved){
+        const obj = JSON.parse(saved);
+        if (obj && Number.isFinite(obj.lat) && Number.isFinite(obj.lng)) {
+          activeGeoCenter = obj;
+          const r = parseFloat(savedRadius);
+          if (Number.isFinite(r) && r > 0) activeGeoRadiusKm = r; else activeGeoRadiusKm = 15;
+        }
+      }
+    } catch(_) {}
+    updateCurrentLocationLabel();
+  })();
+
+  // 2) tentativa de geolocalização automática (executada ao abrir a results view se ainda não definido)
+  async function attemptAutoGeolocation(){
+    if (activeGeoCenter) return; // já temos
+    if (!('geolocation' in navigator)) return;
+    if (currentLocationLabel){
+      currentLocationLabel.textContent = 'Detectando sua localização...';
+      currentLocationLabel.classList.add('locating');
+    }
+    const getPosition = () => new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
+    });
+    try {
+      const pos = await getPosition();
+      const { latitude, longitude } = pos.coords;
+      // aproxima para local conhecido do mock mais próximo, senão usa label genérica
+      let nearest = null; let nearestDist = Infinity;
+      const toRad = d=> d*Math.PI/180; const R=6371;
+      const distKm = (a,b,c,d)=>{ const dLat=toRad(c-a); const dLng=toRad(d-b); const A=Math.sin(dLat/2)**2+Math.cos(toRad(a))*Math.cos(toRad(c))*Math.sin(dLng/2)**2; return 2*R*Math.atan2(Math.sqrt(A),Math.sqrt(1-A)); };
+      // reutiliza mockGeoDB se já foi definido (garantir escopo)
+      const mockList = typeof mockGeoDB !== 'undefined' ? mockGeoDB : [];
+      mockList.forEach(m => {
+        const d = distKm(latitude, longitude, m.lat, m.lng);
+        if (d < nearestDist){ nearestDist = d; nearest = m; }
+      });
+      if (nearest && nearestDist <= 80){
+        activeGeoCenter = { lat: latitude, lng: longitude, cidade: nearest.cidade, uf: nearest.uf };
+      } else {
+        activeGeoCenter = { lat: latitude, lng: longitude, cidade: 'Local atual', uf: '' };
+      }
+      activeGeoRadiusKm = activeGeoRadiusKm || 20; // raio default se usuário não escolheu
+      updateCurrentLocationLabel();
+      performSearch();
+      // persiste
+      try { localStorage.setItem(GEO_STORAGE_KEY, JSON.stringify(activeGeoCenter)); localStorage.setItem(GEO_RADIUS_KEY, String(activeGeoRadiusKm)); } catch(_) {}
+    } catch(err){
+      // usuário negou ou erro — mantém obrigação de definir manualmente
+      if (currentLocationLabel){
+        currentLocationLabel.textContent = 'Defina seu local';
+        currentLocationLabel.classList.add('need-location');
+      }
+    } finally {
+      currentLocationLabel?.classList.remove('locating');
+    }
+  }
+
+  // Hook: quando abrir results view sem localização definida, tenta geolocalizar
+  const originalOpenResultsView = openResultsView;
+  openResultsView = function(term){
+    originalOpenResultsView.call(this, term);
+    // só tenta se ainda não definido e não restaurado
+    if (!activeGeoCenter) attemptAutoGeolocation();
+  };
+
+  // ===== Seleção múltipla =====
+  function updateSelectionBar(){
+    const count = selectedProfessionals.size;
+    if (selectionCountEl) selectionCountEl.textContent = String(count);
+    if (count > 0){
+      selectionBar?.classList.remove('hidden');
+      selectionBar?.setAttribute('aria-hidden','false');
+      selectionContinueBtn && (selectionContinueBtn.disabled = false);
+    } else {
+      selectionBar?.classList.add('hidden');
+      selectionBar?.setAttribute('aria-hidden','true');
+      selectionContinueBtn && (selectionContinueBtn.disabled = true);
+      selectedCategory = null;
+    }
+  }
+
+  function toggleProfessionalSelection(id, categoria){
+    if (!id) return;
+    if (!selectedProfessionals.has(id)){
+      // Adicionando novo — validar categoria
+      if (selectedCategory && selectedCategory !== categoria){
+        alert('Você só pode selecionar profissionais da mesma categoria: ' + selectedCategory + '.');
+        return;
+      }
+      selectedProfessionals.add(id);
+      selectedCategory = selectedCategory || categoria;
+    } else {
+      selectedProfessionals.delete(id);
+      if (selectedProfessionals.size === 0) selectedCategory = null;
+    }
+    // Atualiza UI
+    document.querySelectorAll('.search-result-card').forEach(card => {
+      const cid = card.getAttribute('data-prof-id');
+      if (selectedProfessionals.has(cid)) {
+        card.classList.add('selected');
+        const ind = card.querySelector('.select-indicator'); if (ind) ind.textContent = '✓';
+      } else {
+        card.classList.remove('selected');
+        const ind = card.querySelector('.select-indicator'); if (ind) ind.textContent = '+';
+      }
+    });
+    updateSelectionBar();
+  }
+
+  selectionContinueBtn?.addEventListener('click', ()=>{
+    if (!selectedProfessionals.size) return;
+    alert('Continuar fluxo com: ' + Array.from(selectedProfessionals).join(', ') + ' (próxima tela futura).');
+  });
+
+  // ===== Mostrar / esconder barra de busca e tópico =====
+  function showResultsTopic(term){
+    if (!resultsTopicLine || !resultsTopicText) return;
+    resultsTopicText.textContent = 'Resultados para: ' + term;
+    resultsTopicLine.classList.remove('hidden');
+    resultsTopicLine.setAttribute('aria-hidden','false');
+    // esconde barra de busca
+    const bar = document.querySelector('.results-search-bar');
+    bar?.classList.add('hidden');
+  }
+  function hideResultsTopic(){
+    resultsTopicLine?.classList.add('hidden');
+    resultsTopicLine?.setAttribute('aria-hidden','true');
+    const bar = document.querySelector('.results-search-bar');
+    bar?.classList.remove('hidden');
+  }
+  changeSearchBtn?.addEventListener('click', (e)=>{ e.preventDefault(); hideResultsTopic(); resultsSearchInput?.focus(); });
+
+  // Ao enviar formulário de results substitui pela linha de tópico
+  resultsSearchForm?.addEventListener('submit', (e)=>{
+    // (Já existe listener acima; reforçamos para mostrar tópico)
+    setTimeout(()=>{ if (lastSearchQuery) showResultsTopic(lastSearchQuery); }, 10);
   });
 
   // Exemplo: se quiser abrir a Home direto para visualização agora, descomente:

@@ -1,0 +1,9 @@
+{
+  "desentupimento": ["encanador", "cano", "hidráulica"],
+  "cano": ["encanador", "hidráulica"],
+  "vazamento": ["encanador"],
+  "hidraulica": ["hidráulica", "encanador"],
+  "hidrulica": ["hidráulica", "encanador"],
+  "chuveiro": ["instalação de chuveiro", "eletricista", "encanador"],
+  "tomada": ["eletricista"]
+}
