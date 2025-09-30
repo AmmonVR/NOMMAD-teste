@@ -56,6 +56,13 @@ function initAuthScreen() {
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const searchHistory = document.getElementById('search-history');
+  // Propostas (listas e filtros)
+  const proposalsListEl = document.getElementById('proposals-list');
+  const proposalsEmptyEl = document.getElementById('proposals-empty');
+  const acceptedSectionEl = document.getElementById('accepted-proposals-section');
+  const acceptedListEl = document.getElementById('accepted-proposals-list');
+  const acceptedEmptyEl = document.getElementById('accepted-empty');
+  const proposalServiceFilter = document.getElementById('proposal-service-filter');
 
   // Results view elements
   const resultsView = document.getElementById('results-view');
@@ -603,6 +610,8 @@ function initAuthScreen() {
     if (headerTitle) headerTitle.textContent = 'Início';
     // foca na busca para UX rápida
     setTimeout(() => searchInput?.focus(), 0);
+    // Atualiza badge (se propostas mock existem)
+    try { updateProposalsBadge(); } catch(_) {}
   }
 
   // Helper: set active nav button by index or element
