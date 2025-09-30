@@ -186,6 +186,7 @@
           <button id="tab-requests-btn" class="tab" role="tab" aria-selected="false" aria-controls="tab-requests">
             <span class="tab-icon">📋</span>
             <span class="tab-text">Propostas</span>
+            <span id="proposals-badge" class="tab-badge hidden" aria-hidden="true">0</span>
           </button>
         </div>
 
@@ -265,6 +266,17 @@
         </div>
 
         <div id="tab-requests" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-requests-btn" aria-hidden="true">
+          <!-- Seção de Propostas Aceitas (agora acima das recebidas) -->
+          <section id="accepted-proposals-section" class="accepted-proposals hidden" aria-hidden="true">
+            <header class="proposals-header">
+              <h2 class="section-title">Propostas Aceitas</h2>
+            </header>
+            <div id="accepted-empty" class="empty" aria-hidden="false">
+              <p>Nenhuma proposta aceita ainda.</p>
+            </div>
+            <ul id="accepted-proposals-list" class="proposals-list" role="list" aria-live="polite"></ul>
+          </section>
+
           <header class="proposals-header">
             <h2 class="section-title">Propostas Recebidas</h2>
             <div class="service-filter">
@@ -304,6 +316,7 @@
             <path d="M21 12a8 8 0 1 0-4.9 7.4L21 21l-1.6-4.9A8 8 0 0 0 21 12z"/>
           </svg>
           <span class="nav-label">Chat</span>
+          <span id="chat-unread-dot" class="unread-dot hidden" aria-hidden="true"></span>
         </button>
         <!-- Botão de Perfil: adicionamos um id para ligar no JavaScript -->
         <button id="profile-tab-btn" class="nav-item" type="button">
@@ -423,6 +436,8 @@
   </section>
 
   <!-- app.js is loaded with defer in the head to ensure DOM is ready before execution -->
+  <!-- Botão de teste para simular chegada de mensagem (ambiente de desenvolvimento) -->
+  <button id="simulate-message-btn" type="button" class="dev-test-btn" aria-label="Simular mensagem recebida">Simular Msg</button>
   </body>
   </html>
 
