@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css" />
-    <script src="app.js" defer></script>
+  <script src="searchEngine.js" defer></script>
+  <script src="app.js" defer></script>
   </head>
   <body>
     <!-- 
@@ -287,9 +288,59 @@
           </header>
           <div id="proposals-empty" class="empty" aria-hidden="false">
             <p>Nenhuma proposta ainda. Os profissionais estão preparando respostas.</p>
+<<<<<<< HEAD
+=======
           </div>
           <ul id="proposals-list" class="proposals-list" role="list" aria-live="polite"></ul>
         </div>
+      </section>
+
+      <!-- RESULTADOS DE BUSCA (nova "página" interna) -->
+      <section id="results-view" class="results-view hidden" aria-hidden="true" role="region" aria-label="Resultados da busca" style="display:none">
+        <header class="results-header">
+          <button id="results-back-btn" class="icon-btn results-back" aria-label="Voltar">&lt;</button>
+          <h2 class="results-title">Resultados</h2>
+          <div class="results-actions">
+            <div id="current-location-label" class="current-location-label" aria-live="polite">Local: não definido</div>
+            <button id="change-location-btn" type="button" class="change-location-btn">Alterar local</button>
+          </div>
+        </header>
+        <!-- Linha que mostra o tópico pesquisado e botão para alterar a pesquisa -->
+        <div id="results-topic-line" class="results-topic-line hidden" aria-hidden="true">
+          <span id="results-topic-text"></span>
+          <button id="change-search-btn" type="button" class="change-search-btn" aria-label="Alterar termo da pesquisa">Alterar</button>
+        </div>
+        <div class="results-search-bar">
+          <form id="results-search-form" class="search-form" role="search" aria-label="Pesquisar novamente">
+            <div class="search-input-wrapper">
+              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              <input id="results-search-input" class="search-input" type="search" placeholder="Refinar busca..." aria-label="Refinar busca" />
+            </div>
+          </form>
+        </div>
+        <!-- Barra de seleção (aparece quando há itens selecionados) -->
+        <div id="selection-bar" class="selection-bar hidden" aria-hidden="true">
+          <div class="selection-info"><span id="selection-count">0</span> selecionado(s)</div>
+          <button id="selection-continue-btn" type="button" class="btn-continue-selection" aria-label="Continuar com profissionais selecionados" disabled>Continuar</button>
+        </div>
+        <div id="geo-filters-panel" class="geo-filters-panel hidden" aria-hidden="true">
+          <div class="geo-filters" id="geo-filters">
+            <div class="geo-row">
+              <label class="geo-label" for="geo-location-input">Local</label>
+              <input id="geo-location-input" class="geo-input" type="text" placeholder="Cidade ou bairro" aria-label="Localização" />
+            </div>
+            <div class="geo-row">
+              <label class="geo-label" for="geo-radius-input">Raio (km)</label>
+              <input id="geo-radius-input" class="geo-input" type="number" min="1" max="200" value="15" aria-label="Raio em km" />
+              <button id="geo-apply-btn" type="button" class="geo-apply-btn">Aplicar</button>
+              <button id="geo-clear-btn" type="button" class="geo-clear-btn" title="Limpar filtro" aria-label="Limpar filtros de localização">✕</button>
+            </div>
+            <div id="geo-active-hint" class="geo-active-hint hidden" aria-live="polite"></div>
+>>>>>>> 62f3e5d (Implementa busca com seleção de profissionais e ajustes UI)
+          </div>
+          <ul id="proposals-list" class="proposals-list" role="list" aria-live="polite"></ul>
+        </div>
+        <div id="search-results" class="search-results" aria-live="polite"></div>
       </section>
 
       <!-- Navegação inferior -->

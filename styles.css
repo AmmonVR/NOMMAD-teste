@@ -50,6 +50,39 @@ body {
   overflow-x: hidden;
 }
 
+/* ============================= */
+/* RESULTADOS DE BUSCA (custom)  */
+/* ============================= */
+.results-topic-line { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px 4px; font-size:13px; color:var(--color-text-dim); }
+.results-topic-line.hidden { display:none; }
+.results-topic-line #results-topic-text { font-weight:600; color:var(--color-text); }
+.change-search-btn { background:none; border:1px solid var(--color-divider); color:var(--color-accent-blue); font-size:12px; padding:6px 10px; border-radius:999px; cursor:pointer; font-weight:600; letter-spacing:.3px; }
+.change-search-btn:hover { background:#1e1e1e; }
+
+/* Cartões de resultados convertidos em estilo de proposta com seleção */
+.search-result-card { background:#181818; border:1px solid rgba(255,255,255,0.10); border-radius:16px; padding:12px 14px 10px; display:flex; gap:12px; position:relative; cursor:pointer; transition: border-color .2s, background .2s, transform .18s; }
+.search-result-card:hover { border-color:rgba(255,255,255,0.25); background:#1d1d1d; }
+.search-result-avatar { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #2a2a2a; flex-shrink:0; }
+.search-result-body { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
+.search-result-name { font-weight:600; font-size:.95rem; line-height:1.1; }
+.search-result-cat { font-size:.55rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:var(--color-accent-blue); }
+.search-result-meta { display:flex; gap:8px; flex-wrap:wrap; font-size:.58rem; color:#bbb; }
+.search-result-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+.search-result-tags span { background:#222; border:1px solid #303030; color:#bbb; font-size:.55rem; padding:2px 6px; border-radius:12px; letter-spacing:.5px; }
+
+/* Botão de seleção (checkbox estilizado) */
+.select-indicator { position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:10px; border:2px solid #3a3a3a; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#777; background:#151515; transition: all .22s; }
+.search-result-card.selected .select-indicator { background:linear-gradient(135deg,#00bcf0,#ffe556); border-color:#00bcf0; color:#111; box-shadow:0 0 0 3px rgba(0,188,240,0.25); }
+.search-result-card.selected { outline:2px solid #00bcf0; }
+
+.selection-bar { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:16px; background:linear-gradient(90deg,#141414,#0f0f0f); border:1px solid var(--color-divider); padding:10px 14px; border-radius:14px; margin:10px 10px 6px; box-shadow:0 4px 14px rgba(0,0,0,0.4); }
+.selection-bar.hidden { display:none; }
+.selection-info { font-size:.72rem; font-weight:600; letter-spacing:.5px; color:var(--color-text-dim); }
+.btn-continue-selection { background:linear-gradient(90deg,#ffe556,#00bcf0); color:#111; font-weight:700; font-size:.7rem; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; letter-spacing:.6px; box-shadow:0 4px 16px rgba(0,188,240,0.35); }
+.btn-continue-selection:disabled { filter:grayscale(1) brightness(.6); cursor:not-allowed; box-shadow:none; }
+
+.search-empty { padding:28px 16px; text-align:center; font-size:.8rem; color:var(--color-text-dim); }
+
 /* Layout principal */
 .screen {
   min-height: 100dvh; /* ocupa a altura total da tela, considerando barras do celular */
@@ -758,6 +791,62 @@ input[type="checkbox"] {
   gap: 8px;
   min-height: 20px;
 }
+
+/* ==== Resultados de busca de profissionais ==== */
+.search-results { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+.search-result-card { background:#171717; border:1px solid #242424; border-radius:14px; padding:12px 14px; display:flex; gap:12px; cursor:pointer; transition: background .18s, border-color .18s; }
+.search-result-card:hover { background:#1d1d1d; border-color:#333; }
+.search-result-avatar { width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid #242424; }
+.search-result-body { flex:1; display:flex; flex-direction:column; gap:4px; min-width:0; }
+.search-result-name { font-weight:600; font-size:.9rem; }
+.search-result-cat { font-size:.55rem; letter-spacing:.5px; text-transform:uppercase; font-weight:600; color: var(--color-accent-blue); }
+.search-result-meta { font-size:.6rem; color:#aaa; display:flex; gap:12px; flex-wrap:wrap; }
+.search-result-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+.search-result-tags span { background:#222; border:1px solid #303030; color:#bbb; font-size:.5rem; padding:2px 6px; border-radius:10px; letter-spacing:.5px; }
+.search-empty { font-size:.7rem; color:#777; padding:8px 4px; }
+
+/* ==== Filtros geográficos ==== */
+.geo-filters { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; background:#161616; padding:10px 12px; border:1px solid #242424; border-radius:14px; }
+.geo-row { display:flex; align-items:center; gap:8px; }
+.geo-label { font-size:.6rem; text-transform:uppercase; letter-spacing:.5px; color:#888; font-weight:600; }
+.geo-input { flex:1; background:#151515; border:1px solid var(--color-divider); color:#eee; padding:8px 10px; border-radius:10px; font-size:.75rem; }
+.geo-input:focus { outline:2px solid var(--color-accent-blue); outline-offset:2px; }
+.geo-apply-btn { background:linear-gradient(90deg,#00bcf0,#ffe556); border:none; color:#111; font-size:.65rem; font-weight:700; padding:8px 12px; border-radius:10px; cursor:pointer; }
+.geo-apply-btn:hover { filter:brightness(1.05); }
+.geo-clear-btn { background:#242424; border:1px solid #333; color:#bbb; font-size:.7rem; padding:6px 10px; border-radius:10px; cursor:pointer; }
+.geo-clear-btn:hover { background:#2c2c2c; color:#eee; }
+.geo-active-hint { font-size:.55rem; color:#aaa; margin-top:2px; }
+.geo-active-hint strong { color: var(--color-accent-orange); }
+
+/* ===== Results View (página de resultados) ===== */
+.results-view { position: fixed; inset: 0; background: var(--color-bg); z-index: 850; overflow-y: auto; padding: 10px 16px 120px; display: flex; flex-direction: column; gap: 14px; }
+.results-view.hidden { display: none; }
+.results-view.anim-enter { animation: resultsFadeIn .35s cubic-bezier(.16,.8,.3,1); }
+.results-view.anim-leave { animation: resultsFadeOut .28s ease forwards; }
+.home.results-hide { opacity:0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
+@keyframes resultsFadeIn { 0% { opacity:0; transform: translateY(14px);} 60% { opacity:1; transform: translateY(-3px);} 100% { opacity:1; transform: translateY(0);} }
+@keyframes resultsFadeOut { 0% { opacity:1; transform: translateY(0);} 100% { opacity:0; transform: translateY(8px);} }
+.results-header { display:flex; align-items:center; gap:12px; position:sticky; top:0; background:linear-gradient(180deg,#121212,#121212EE); padding:10px 4px 12px; z-index:10; }
+.results-back { width:38px; height:38px; background:#1c1c1c; border:1px solid #2a2a2a; border-radius:12px; display:inline-grid; place-items:center; font-size:20px; color:#bbb; }
+.results-back:hover { color:#fff; background:#232323; }
+.results-title { margin:0; font-size:18px; font-weight:700; }
+.results-actions { margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.current-location-label { font-size:.55rem; color:#aaa; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
+.current-location-label.need-location { color: #ff9a00; animation: pulseLoc 1.8s ease-in-out infinite; }
+ .current-location-label.locating { color: #00bcf0; animation: locatingSpin 1.2s linear infinite; }
+@keyframes locatingSpin { 0% { opacity:.4;} 50% { opacity:1;} 100% { opacity:.4;} }
+@keyframes pulseLoc { 0%,100% { opacity:1;} 50% { opacity:.55;} }
+.change-location-btn { background:linear-gradient(90deg,#00bcf0,#ffe556); color:#111; border:none; font-size:.65rem; font-weight:700; padding:6px 12px; border-radius:999px; cursor:pointer; }
+.change-location-btn:hover { filter:brightness(1.06); }
+.results-search-bar { margin-top: -4px; }
+.geo-filters-panel { animation: panelSlideDown .3s ease; }
+/* painel animável quando ocultado/mostrado dinamicamente */
+.geo-filters-panel.hidden { display:none; }
+@media (prefers-reduced-motion: reduce){
+  .results-view.anim-enter, .results-view.anim-leave, .geo-filters-panel { animation:none !important; }
+  .home.results-hide { transition:none !important; }
+}
+@keyframes panelSlideDown { 0% { opacity:0; transform:translateY(-6px); } 100% { opacity:1; transform:translateY(0); } }
 
 .search-chip {
   background: #1a1a1a;

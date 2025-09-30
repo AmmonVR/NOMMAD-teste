@@ -1,0 +1,133 @@
+[
+  {
+    "id": "prof-enc-01",
+    "nome": "Carlos Andrade",
+    "categoria": "Encanador",
+    "avatar": "https://randomuser.me/api/portraits/men/12.jpg",
+    "rating": 4.8,
+    "jobsConcluidos": 152,
+    "localizacao": { "lat": -23.55052, "lng": -46.633308, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["encanador", "hidráulica", "desentupimento", "torneira", "cano", "registro", "instalação de pia"],
+    "servicos": [
+      { "id": "svc-desentupimento", "titulo": "Desentupimento residencial", "precoMin": 120, "descricao": "Desentupimento de pia, vaso, ralo e esgoto leve." },
+      { "id": "svc-torneira", "titulo": "Troca de torneira / misturador", "precoMin": 80, "descricao": "Substituição e vedação sem vazamentos." }
+    ]
+  },
+  {
+    "id": "prof-enc-02",
+    "nome": "João Pedro",
+    "categoria": "Encanador",
+    "avatar": "https://randomuser.me/api/portraits/men/33.jpg",
+    "rating": 4.6,
+    "jobsConcluidos": 98,
+    "localizacao": { "lat": -23.604392, "lng": -46.675297, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["encanador", "instalação de chuveiro", "pressão da água", "vazamento", "caixa d'água"],
+    "servicos": [
+      { "id": "svc-vazamento", "titulo": "Detecção de vazamentos", "precoMin": 140, "descricao": "Identificação de pontos críticos sem quebrar tudo." }
+    ]
+  },
+  {
+    "id": "prof-jard-01",
+    "nome": "Marcos Lima",
+    "categoria": "Jardineiro",
+    "avatar": "https://randomuser.me/api/portraits/men/45.jpg",
+    "rating": 4.9,
+    "jobsConcluidos": 210,
+    "localizacao": { "lat": -23.5629, "lng": -46.6544, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["jardineiro", "jardim", "podar", "poda", "grama", "plantas", "paisagismo"],
+    "servicos": [
+      { "id": "svc-poda", "titulo": "Poda e modelagem", "precoMin": 100, "descricao": "Poda de arbustos, frutíferas e ornamentais." }
+    ]
+  },
+  {
+    "id": "prof-ele-01",
+    "nome": "Fernanda Alves",
+    "categoria": "Eletricista",
+    "avatar": "https://randomuser.me/api/portraits/women/12.jpg",
+    "rating": 4.85,
+    "jobsConcluidos": 187,
+    "localizacao": { "lat": -23.572, "lng": -46.6405, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["eletricista", "tomada", "chuveiro elétrico", "disjuntor", "quadro elétrico", "padrão"],
+    "servicos": [
+      { "id": "svc-tomada", "titulo": "Instalação de tomadas e interruptores", "precoMin": 60, "descricao": "Substituição segura e revisão de fiação local." }
+    ]
+  },
+  {
+    "id": "prof-limp-01",
+    "nome": "Mariana Rocha",
+    "categoria": "Limpeza Doméstica",
+    "avatar": "https://randomuser.me/api/portraits/women/45.jpg",
+    "rating": 4.7,
+    "jobsConcluidos": 320,
+    "localizacao": { "lat": -23.559, "lng": -46.658, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["limpeza", "faxina", "organização", "cozinha", "banheiro", "lavagem"],
+    "servicos": [
+      { "id": "svc-faxina", "titulo": "Faxina completa apartamento", "precoMin": 180, "descricao": "Limpeza detalhada de até 3 quartos + 2 banheiros." }
+    ]
+  },
+  {
+    "id": "prof-limp-02",
+    "nome": "Joice Matos",
+    "categoria": "Limpeza Doméstica",
+    "avatar": "https://randomuser.me/api/portraits/women/52.jpg",
+    "rating": 4.9,
+    "jobsConcluidos": 410,
+    "localizacao": { "lat": -23.566, "lng": -46.667, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["limpeza", "passar roupa", "organização", "aspirar", "pós-obra"],
+    "servicos": [
+      { "id": "svc-posobra", "titulo": "Limpeza pós-obra", "precoMin": 300, "descricao": "Remoção de resíduos de obra e poeira fina." }
+    ]
+  },
+  {
+    "id": "prof-prog-01",
+    "nome": "Lucas Ferreira",
+    "categoria": "Programador",
+    "avatar": "https://randomuser.me/api/portraits/men/56.jpg",
+    "rating": 4.95,
+    "jobsConcluidos": 120,
+    "localizacao": { "lat": -23.571, "lng": -46.642, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["programador", "frontend", "javascript", "react", "site", "app"],
+    "servicos": [
+      { "id": "svc-site", "titulo": "Site institucional", "precoMin": 1500, "descricao": "Criação de site responsivo moderno." }
+    ]
+  },
+  {
+    "id": "prof-prog-02",
+    "nome": "Ana Beatriz",
+    "categoria": "Programador",
+    "avatar": "https://randomuser.me/api/portraits/women/68.jpg",
+    "rating": 4.92,
+    "jobsConcluidos": 210,
+    "localizacao": { "lat": -23.565, "lng": -46.639, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["programador", "backend", "api", "node", "sistema", "integração"],
+    "servicos": [
+      { "id": "svc-api", "titulo": "API REST sob medida", "precoMin": 2500, "descricao": "Backend escalável com documentação." }
+    ]
+  },
+  {
+    "id": "prof-pint-01",
+    "nome": "Rogério Pinto",
+    "categoria": "Pintura",
+    "avatar": "https://randomuser.me/api/portraits/men/71.jpg",
+    "rating": 4.6,
+    "jobsConcluidos": 95,
+    "localizacao": { "lat": -23.553, "lng": -46.651, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["pintura", "pintor", "paredes", "massa corrida", "latex", "acabamento"],
+    "servicos": [
+      { "id": "svc-parede", "titulo": "Pintura sala até 25m²", "precoMin": 400, "descricao": "Inclui preparação simples e 2 demãos." }
+    ]
+  },
+  {
+    "id": "prof-pint-02",
+    "nome": "Cláudia Ramos",
+    "categoria": "Pintura",
+    "avatar": "https://randomuser.me/api/portraits/women/71.jpg",
+    "rating": 4.88,
+    "jobsConcluidos": 188,
+    "localizacao": { "lat": -23.548, "lng": -46.638, "cidade": "São Paulo", "uf": "SP" },
+    "keywords": ["pintura", "textura", "grafiato", "tinta", "parede externa"],
+    "servicos": [
+      { "id": "svc-textura", "titulo": "Aplicação de textura decorativa", "precoMin": 650, "descricao": "Textura ou grafiato em parede destaque." }
+    ]
+  }
+]
