@@ -646,21 +646,65 @@ function initAuthScreen() {
   tabRequestsBtn?.addEventListener('click', () => activateTab('requests'));
 
   // Histórico de busca simples (em memória)
+  // Histórico: armazenamos termos únicos, mais recente primeiro
   const recentSearches = [];
+  function pushRecent(term){
+    if (!term) return;
+    const norm = term.trim();
+    if (!norm) return;
+    const idx = recentSearches.findIndex(t => t.toLowerCase() === norm.toLowerCase());
+    if (idx !== -1) {
+      recentSearches.splice(idx,1); // remove ocorrência antiga
+    }
+    recentSearches.unshift(norm); // adiciona no início
+    // limita a 8 itens
+    if (recentSearches.length > 8) recentSearches.length = 8;
+  }
   function renderSearchHistory() {
     if (!searchHistory) return;
     searchHistory.innerHTML = '';
-    recentSearches.slice(-6).reverse().forEach((term) => {
+    recentSearches.forEach((term) => {
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.className = 'search-chip';
-      chip.textContent = term;
+      chip.innerHTML = `
+        <span class="search-chip-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <polyline points="12 7 12 12 15 14"></polyline>
+          </svg>
+        </span>
+        <span class="search-chip-text">${term}</span>`;
       chip.addEventListener('click', () => {
         searchInput.value = term;
+        lastSearchQuery = term;
+        openResultsView(term);
       });
       searchHistory.appendChild(chip);
     });
   }
+
+  /* =============================================
+     CLIQUE EM SUGESTÕES DO CARROSSEL
+     Objetivo: ao clicar em uma sugestão, abrir a
+     tela de resultados e executar a busca usando
+     o texto da sugestão.
+     ============================================= */
+  carousel?.addEventListener('click', (e) => {
+    const btn = e.target.closest?.('.suggestion-card');
+    if (!btn) return;
+    const label = btn.querySelector('.label');
+    const term = label?.textContent?.trim();
+    if (!term) return;
+    // Atualiza campo de busca na Home para coerência
+    if (searchInput) searchInput.value = term;
+    // Armazena em histórico e atualiza UI
+  pushRecent(term);
+  renderSearchHistory();
+  lastSearchQuery = term;
+    // Abre view de resultados já com a busca pronta
+    openResultsView(term);
+  });
 
   // Abre results view e executa busca
   function openResultsView(initialTerm){
@@ -710,9 +754,9 @@ function initAuthScreen() {
     e.preventDefault();
     const term = String(searchInput?.value || '').trim();
     if (!term) return;
-    recentSearches.push(term);
-    renderSearchHistory();
-    lastSearchQuery = term;
+  pushRecent(term);
+  renderSearchHistory();
+  lastSearchQuery = term;
     // abre página de resultados
     openResultsView(term);
   });
