@@ -50,11 +50,15 @@ function initAuthScreen() {
   const headerTitle = document.getElementById('header-title');
   const tabServicesBtn = document.getElementById('tab-services-btn');
   const tabRequestsBtn = document.getElementById('tab-requests-btn');
+  const proposalsBadge = document.getElementById('proposals-badge');
   const tabServices = document.getElementById('tab-services');
   const tabRequests = document.getElementById('tab-requests');
   // PROPOSTAS (lista de propostas recebidas)
   const proposalsListEl = document.getElementById('proposals-list');
   const proposalsEmptyEl = document.getElementById('proposals-empty');
+  const acceptedSectionEl = document.getElementById('accepted-proposals-section');
+  const acceptedListEl = document.getElementById('accepted-proposals-list');
+  const acceptedEmptyEl = document.getElementById('accepted-empty');
   const proposalServiceFilter = document.getElementById('proposal-service-filter');
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
@@ -574,6 +578,8 @@ function initAuthScreen() {
     setHidden(headerTitle, false);
     // foca na busca para UX rápida
     setTimeout(() => searchInput?.focus(), 0);
+    // Atualiza badge de propostas ao entrar na home
+    try { updateProposalsBadge(); } catch(_) {}
   }
 
   // Helper: set active nav button by index or element
@@ -684,27 +690,102 @@ function initAuthScreen() {
 
   function buildProposalCardHTML(p) {
     const fee = p.basePrice * p.feePercent;
-    return `
-      <div class="proposal-main-click-area">
-        <div class="proposal-left">
-          <img class="proposal-avatar" src="${p.avatar}" alt="Foto de ${p.professionalName}">
-          <div class="proposal-info">
-            <div class="proposal-name">${p.professionalName}</div>
-            <div class="proposal-service" title="${p.serviceTitle}">${p.serviceTitle}</div>
-            <div class="proposal-rating"><span class="stars">★★★★★</span><span class="rating-val">${p.rating.toFixed(1)}</span><span class="rating-count">(${p.ratingCount})</span></div>
-            <div class="proposal-extra"><span class="tag">Prazo: ${p.deliveryEstimateDays} dia${p.deliveryEstimateDays>1?'s':''}</span></div>
+    if (p.status === 'accepted') {
+      return `
+        <div class="proposal-main-click-area">
+          <div class="proposal-left">
+            <img class="proposal-avatar" src="${p.avatar}" alt="Foto de ${p.professionalName}">
+            <div class="proposal-info">
+              <div class="proposal-name">${p.professionalName}</div>
+              <div class="proposal-service" title="${p.serviceTitle}">${p.serviceTitle}</div>
+              <div class="proposal-rating"><span class="stars">★★★★★</span><span class="rating-val">${p.rating.toFixed(1)}</span><span class="rating-count">(${p.ratingCount})</span></div>
+              <div class="proposal-extra"><span class="tag">Prazo: ${p.deliveryEstimateDays} dia${p.deliveryEstimateDays>1?'s':''}</span></div>
+            </div>
+          </div>
+          <div class="proposal-price-block">
+            <div class="proposal-price">${formatPriceBRL(p.basePrice)}</div>
+            <div class="proposal-fee-hint">Taxa: ${formatPriceBRL(fee)}</div>
           </div>
         </div>
-        <div class="proposal-price-block">
-          <div class="proposal-price">${formatPriceBRL(p.basePrice)}</div>
-          <div class="proposal-fee-hint">Taxa: ${formatPriceBRL(fee)}</div>
+        <div class="proposal-service-description">${p.serviceDescription}</div>
+        <div class="proposal-actions">
+          <button class="btn-chat" type="button" data-action="go-chat">Ir para o chat</button>
+        </div>`;
+    }
+    return `
+        <div class="proposal-main-click-area">
+          <div class="proposal-left">
+            <img class="proposal-avatar" src="${p.avatar}" alt="Foto de ${p.professionalName}">
+            <div class="proposal-info">
+              <div class="proposal-name">${p.professionalName}</div>
+              <div class="proposal-service" title="${p.serviceTitle}">${p.serviceTitle}</div>
+              <div class="proposal-rating"><span class="stars">★★★★★</span><span class="rating-val">${p.rating.toFixed(1)}</span><span class="rating-count">(${p.ratingCount})</span></div>
+              <div class="proposal-extra"><span class="tag">Prazo: ${p.deliveryEstimateDays} dia${p.deliveryEstimateDays>1?'s':''}</span></div>
+            </div>
+          </div>
+          <div class="proposal-price-block">
+            <div class="proposal-price">${formatPriceBRL(p.basePrice)}</div>
+            <div class="proposal-fee-hint">Taxa: ${formatPriceBRL(fee)}</div>
+          </div>
         </div>
-      </div>
-      <div class="proposal-service-description">${p.serviceDescription}</div>
-      <div class="proposal-actions">
-        <button class="btn-accept" type="button" data-action="accept">Aceitar</button>
-        <button class="btn-reject" type="button" data-action="reject">Recusar</button>
-      </div>`;
+        <div class="proposal-service-description">${p.serviceDescription}</div>
+        <div class="proposal-actions">
+          <button class="btn-accept" type="button" data-action="accept">Aceitar</button>
+          <button class="btn-reject" type="button" data-action="reject">Recusar</button>
+        </div>`;
+  }
+
+  function wireProposalCard(li, p) {
+    li.querySelector('.proposal-main-click-area')?.addEventListener('click', () => {
+      alert('Abrir perfil completo de ' + p.professionalName + ' (implementação futura).');
+    });
+    if (p.status === 'pending') {
+      li.querySelector('[data-action="accept"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        acceptProposal(p.id);
+      });
+      li.querySelector('[data-action="reject"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        rejectProposal(p.id);
+      });
+    } else if (p.status === 'accepted') {
+      li.querySelector('[data-action="go-chat"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        // garante que há chat e abre lista de chats
+        ensureChatForProfessional(p.professionalId, p.professionalName, p.avatar);
+        openChatsList();
+        setActiveNav(chatTabBtn);
+      });
+    }
+  }
+
+  function renderAccepted() {
+    if (!acceptedListEl || !acceptedEmptyEl || !acceptedSectionEl) return;
+    const accepted = proposals.filter(p => p.status === 'accepted');
+    if (!accepted.length) {
+      acceptedSectionEl.classList.add('hidden');
+      acceptedSectionEl.setAttribute('aria-hidden','true');
+      acceptedEmptyEl.classList.remove('hidden');
+      acceptedEmptyEl.setAttribute('aria-hidden','false');
+      acceptedListEl.innerHTML = '';
+      return;
+    }
+    acceptedSectionEl.classList.remove('hidden');
+    acceptedSectionEl.setAttribute('aria-hidden','false');
+    // Esconde texto vazio porque agora temos propostas aceitas
+    acceptedEmptyEl.classList.add('hidden');
+    acceptedEmptyEl.setAttribute('aria-hidden','true');
+    acceptedListEl.innerHTML = '';
+    accepted.forEach(p => {
+      const li = document.createElement('li');
+      li.className = 'proposal-card accepted';
+      li.setAttribute('role','listitem');
+      li.dataset.proposalId = p.id;
+      li.dataset.serviceId = p.serviceId;
+      li.innerHTML = buildProposalCardHTML(p);
+      wireProposalCard(li, p);
+      acceptedListEl.appendChild(li);
+    });
   }
 
   function renderProposals(list) {
@@ -713,44 +794,56 @@ function initAuthScreen() {
     if (!list.length) {
       proposalsEmptyEl.classList.remove('hidden');
       proposalsEmptyEl.setAttribute('aria-hidden','false');
-      return;
+    } else {
+      proposalsEmptyEl.classList.add('hidden');
+      proposalsEmptyEl.setAttribute('aria-hidden','true');
+      list.forEach(p => {
+        const li = document.createElement('li');
+        li.className = 'proposal-card';
+        li.setAttribute('role','listitem');
+        li.dataset.proposalId = p.id;
+        li.dataset.serviceId = p.serviceId;
+        li.innerHTML = buildProposalCardHTML(p);
+        wireProposalCard(li, p);
+        proposalsListEl.appendChild(li);
+      });
     }
-    proposalsEmptyEl.classList.add('hidden');
-    proposalsEmptyEl.setAttribute('aria-hidden','true');
-    list.forEach(p => {
-      const li = document.createElement('li');
-      li.className = 'proposal-card';
-      li.setAttribute('role','listitem');
-      li.dataset.proposalId = p.id;
-      li.dataset.serviceId = p.serviceId;
-      li.innerHTML = buildProposalCardHTML(p);
-      // Clique no corpo abre perfil profissional (futuro: tela dedicada)
-      li.querySelector('.proposal-main-click-area')?.addEventListener('click', () => {
-        alert('Abrir perfil completo de ' + p.professionalName + ' (implementação futura).');
-      });
-  // Botão aceitar
-      li.querySelector('[data-action="accept"]').addEventListener('click', (e) => {
-        e.stopPropagation();
-        acceptProposal(p.id);
-      });
-      // Botão recusar
-      li.querySelector('[data-action="reject"]').addEventListener('click', (e) => {
-        e.stopPropagation();
-        rejectProposal(p.id);
-      });
-      proposalsListEl.appendChild(li);
-    });
+    // sempre render accepted depois
+    renderAccepted();
   }
 
   function filterProposals() {
     const serviceFilter = proposalServiceFilter?.value || 'all';
     const visible = proposals.filter(p => p.status === 'pending' && (serviceFilter === 'all' || p.serviceId === serviceFilter));
     renderProposals(visible);
+    updateProposalsBadge();
   }
 
   function renderProposalsView() {
     populateServiceFilter();
     filterProposals();
+    updateProposalsBadge();
+  }
+
+  function updateProposalsBadge() {
+    if (!proposalsBadge) return;
+    const pendingCount = proposals.filter(p => p.status === 'pending').length;
+    if (pendingCount === 0) {
+      proposalsBadge.textContent = '0';
+      proposalsBadge.classList.add('hidden');
+      proposalsBadge.setAttribute('aria-hidden','true');
+    } else {
+      const previous = proposalsBadge.textContent;
+      proposalsBadge.textContent = String(pendingCount);
+      proposalsBadge.classList.remove('hidden');
+      proposalsBadge.setAttribute('aria-hidden','false');
+      if (previous !== String(pendingCount)) {
+        proposalsBadge.classList.remove('bump');
+        // reflow para reiniciar animação
+        void proposalsBadge.offsetWidth;
+        proposalsBadge.classList.add('bump');
+      }
+    }
   }
 
   function ensureChatForProfessional(professionalId, name, avatar) {
@@ -773,11 +866,18 @@ function initAuthScreen() {
         <div class="chat-item-last">Chat liberado após aceite.</div>
       </div>`;
     container.prepend(btn);
+    // Marca indicador de não lido assim que o chat é criado
+    markChatUnread();
   }
 
   function acceptProposal(proposalId) {
     const p = proposals.find(x => x.id === proposalId);
     if (!p || p.status !== 'pending') return;
+    // animação de saída do card original
+    const originalLi = document.querySelector(`.proposal-card[data-proposal-id="${proposalId}"]`);
+    if (originalLi) {
+      originalLi.classList.add('anim-leave');
+    }
     p.status = 'accepted';
     // Rejeita outras do mesmo serviço
     proposals.filter(x => x.serviceId === p.serviceId && x.id !== p.id && x.status === 'pending').forEach(x => x.status = 'rejected');
@@ -787,7 +887,14 @@ function initAuthScreen() {
     console.log('Taxa serviço:', fee.toFixed(2), 'Total cliente:', total.toFixed(2));
     ensureChatForProfessional(p.professionalId, p.professionalName, p.avatar);
     alert('Proposta aceita! Chat liberado.');
-    renderProposalsView();
+    // Aguarda animação de saída antes de re-render
+    setTimeout(() => {
+      renderProposalsView(); // irá mover a proposta para seção de aceitas
+      // adiciona animação de entrada ao último item aceito
+      const lastAccepted = acceptedListEl?.querySelector('.proposal-card.accepted:last-child');
+      if (lastAccepted) lastAccepted.classList.add('anim-enter');
+      updateProposalsBadge();
+    }, 260);
   }
 
   function rejectProposal(proposalId) {
@@ -795,6 +902,7 @@ function initAuthScreen() {
     if (!p || p.status !== 'pending') return;
     p.status = 'rejected';
     renderProposalsView();
+    updateProposalsBadge();
   }
 
   proposalServiceFilter?.addEventListener('change', filterProposals);
@@ -807,6 +915,7 @@ function initAuthScreen() {
   const chatsList = document.getElementById('chats-list');
   const closeChatsBtn = document.getElementById('close-chats');
   const conversationView = document.getElementById('conversation-view');
+  const chatUnreadDot = document.getElementById('chat-unread-dot');
   const backToChatsBtn = document.getElementById('back-to-chats');
   const closeConversationBtn = document.getElementById('close-conversation');
   const chatsContainer = document.querySelector('.chats-container');
@@ -945,6 +1054,8 @@ function initAuthScreen() {
     document.body.style.overflow = 'hidden';
     // focus first interactive element inside chats
     setTimeout(() => chatsContainer?.querySelector('.chat-item')?.focus(), 120);
+    // Ao abrir a lista de chats consideramos notificações visualizadas
+    clearChatUnread();
   }
 
   function closeChats() {
@@ -965,6 +1076,7 @@ function initAuthScreen() {
     addConversationMessage('Oi! Gostaria de saber se você realiza instalações de prateleiras.', false);
     // focus input
     setTimeout(() => conversationInput?.focus(), 120);
+    clearChatUnread();
   }
 
   function closeConversation() {
@@ -983,7 +1095,24 @@ function addConversationMessage(text, received = false) {
     conversationMessages.prepend(el); 
     // scroll to bottom
     setTimeout(() => { conversationMessages.scrollTop = conversationMessages.scrollHeight; }, 20);
+    if (received && !isChatInterfaceOpen()) markChatUnread();
 }
+
+  function isChatInterfaceOpen() {
+    return (chatsList && !chatsList.classList.contains('hidden')) || (conversationView && !conversationView.classList.contains('hidden'));
+  }
+
+  function markChatUnread() {
+    if (!chatUnreadDot) return;
+    chatUnreadDot.classList.remove('hidden');
+    chatUnreadDot.setAttribute('aria-hidden','false');
+  }
+
+  function clearChatUnread() {
+    if (!chatUnreadDot) return;
+    chatUnreadDot.classList.add('hidden');
+    chatUnreadDot.setAttribute('aria-hidden','true');
+  }
 
   // Wire bottom nav chat button
   if (chatTabBtn) chatTabBtn.addEventListener('click', (e) => { e.preventDefault(); openChatsList(); });
@@ -1100,6 +1229,19 @@ function addConversationMessage(text, received = false) {
   window.addEventListener('resize', () => { carouselIndex = 0; updateCarousel(); });
   // Inicializa posição
   updateCarousel();
+
+  // Mostra badge de propostas logo na inicialização (caso já existam pendentes)
+  try { updateProposalsBadge(); } catch(_) {}
+
+  /* =====================
+     BOTÃO DEV: simular mensagem recebida
+     ===================== */
+  const simulateBtn = document.getElementById('simulate-message-btn');
+  simulateBtn?.addEventListener('click', () => {
+    // Simula chegada de mensagem recebida (não lida se chat fechado)
+    addConversationMessage('Mensagem simulada às ' + new Date().toLocaleTimeString(), true);
+    transientMsg('Mensagem simulada');
+  });
 }
 
 // Garante que a inicialização aconteça após o DOM estar pronto (compatível com CodePen)
