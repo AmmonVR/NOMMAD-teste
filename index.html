@@ -191,8 +191,8 @@
           </button>
         </div>
 
-        <!-- Barra de busca e histórico -->
-        <div class="search-section">
+        <!-- Barra de busca e histórico (logo abaixo das tabs, mais próximo) -->
+        <div id="home-search-section" class="search-section">
           <form id="search-form" class="search-form" role="search" aria-label="Pesquisar">
             <div class="search-input-wrapper">
               <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -288,8 +288,6 @@
           </header>
           <div id="proposals-empty" class="empty" aria-hidden="false">
             <p>Nenhuma proposta ainda. Os profissionais estão preparando respostas.</p>
-<<<<<<< HEAD
-=======
           </div>
           <ul id="proposals-list" class="proposals-list" role="list" aria-live="polite"></ul>
         </div>
@@ -353,7 +351,7 @@
           </svg>
           <span class="nav-label">Início</span>
         </button>
-        <button class="nav-item" type="button">
+        <button id="progress-tab-btn" class="nav-item" type="button">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
@@ -380,6 +378,22 @@
       </nav>
 
     </main>
+
+    <!-- TELA "EM ANDAMENTO" (acompanhamento de projetos) -->
+    <section id="progress-view" class="progress-view hidden" aria-hidden="true" role="region" aria-labelledby="progress-title" style="display:none">
+      <header class="progress-header">
+        <h1 id="progress-title" class="progress-title">Acompanhe Seus Pedidos</h1>
+        <p id="progress-subtitle" class="progress-subtitle">0 projetos ativos</p>
+      </header>
+      <section class="progress-section" aria-label="Projetos ativos">
+        <h2 class="progress-section-title">Ativos</h2>
+        <div id="progress-list" class="progress-list" aria-live="polite"></div>
+      </section>
+      <section class="progress-section" aria-label="Projetos concluídos">
+        <h2 class="progress-section-title">Concluídos</h2>
+        <div id="progress-completed-list" class="progress-list" aria-live="polite"></div>
+      </section>
+    </section>
     <!-- Chat screens (outside main to avoid clipping and stacking issues) -->
     <section id="chats-list" class="chat-list hidden" aria-hidden="true">
       <header class="chat-list-header">
