@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <!-- Font Awesome for alert icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="./styles.css" />
   <script src="searchEngine.js" defer></script>
   <script src="app.js" defer></script>
@@ -206,6 +208,35 @@
 
         <!-- Painéis das tabs -->
         <div id="tab-services" class="tab-panel" role="tabpanel" aria-labelledby="tab-services-btn">
+          <!-- Bloco dinâmico de notificações (inicialmente oculto; controlado via JS) -->
+          <div class="notificacoes-alerta" id="notifications-alert" style="display:none" aria-hidden="true">
+            <header class="notificacoes-header">
+              <h2 class="notificacoes-title">Notificações</h2>
+            </header>
+            <div class="notificacoes-list" role="list">
+              <!-- Propostas Pendentes -->
+              <div class="alert-item" id="alert-item-propostas" role="listitem button" tabindex="0" data-action="open-requests" aria-label="Ver propostas recebidas">
+                <div class="alert-icon" aria-hidden="true"><i class="fas fa-bell"></i></div>
+                <div class="alert-body">
+                  <div class="alert-text">Você recebeu <strong>3</strong> propostas! Aperte para ver.</div>
+                </div>
+              </div>
+              <!-- Nova Mensagem -->
+              <div class="alert-item" id="alert-item-mensagem" role="listitem button" tabindex="0" data-action="open-chats" aria-label="Abrir mensagens">
+                <div class="alert-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
+                <div class="alert-body">
+                  <div class="alert-text">João Lima / Pintor enviou mensagem. Aperte para ver.</div>
+                </div>
+              </div>
+              <!-- Pagamento Pendente -->
+              <div class="alert-item" id="alert-item-pagamento" role="listitem button" tabindex="0" data-action="open-payments" aria-label="Ver pagamentos pendentes">
+                <div class="alert-icon" aria-hidden="true"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="alert-body">
+                  <div class="alert-text">Atenção: Você tem um pagamento pendente para o serviço de <span class="highlight">Pintura de Quarto</span>.</div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="section-header">
             <h2 class="section-title">Sugestões</h2>
             <button id="view-all-suggestions" class="view-all" type="button" aria-label="Ver todas as sugestões">Ver Tudo</button>

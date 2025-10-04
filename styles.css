@@ -701,6 +701,54 @@ input[type="checkbox"] {
   padding: 0 var(--space-4) 90px;
 }
 
+/* ============================= */
+/* ALERTA DE NOTIFICAÇÕES (Home) */
+/* ============================= */
+.notificacoes-alerta {
+  width: 100%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  /* Substitui a borda superior por uma faixa animada via ::before */
+  border-top: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: none;
+  margin: 2px 0 6px;
+  position: relative;
+}
+/* Faixa superior animada com cores da marca (amarelo/azul) */
+.notificacoes-alerta::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent-orange), var(--color-brand-primary));
+  background-size: 200% 100%;
+  animation: notiBarOscillate 2.8s ease-in-out infinite alternate;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  pointer-events: none;
+}
+@keyframes notiBarOscillate {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notificacoes-alerta::before { animation: none; background-position: 50% 50%; }
+}
+.notificacoes-header { display:flex; align-items:center; justify-content:space-between; }
+.notificacoes-title { margin: 0 0 6px 0; font-size: 13px; font-weight: 700; color: var(--color-text-dim); }
+.notificacoes-list { display:grid; gap: 6px; }
+.alert-item { display:flex; align-items:flex-start; gap: 8px; background: transparent; border: 1px solid var(--color-divider); border-radius: 10px; padding: 8px 10px; cursor: pointer; }
+.alert-item:hover { background: rgba(255,255,255,0.03); border-color: #2f2f2f; }
+.alert-item:active { transform: translateY(1px); }
+.alert-icon { width: 22px; height: 22px; display:grid; place-items:center; background: transparent; border-radius: 6px; color: var(--color-text-dim); flex: 0 0 22px; }
+.alert-body { display:flex; flex-direction:column; gap: 6px; flex: 1; }
+.alert-text { font-size: 12px; color: var(--color-text); }
+.alert-text .highlight { color: var(--color-accent-orange); font-weight: 600; }
+/* Removidos estilos de botões internos: itens são clicáveis inteiros */
+
+
 .tabs {
   display: grid;
   grid-auto-flow: column;

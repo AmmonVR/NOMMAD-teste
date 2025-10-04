@@ -53,6 +53,8 @@ function initAuthScreen() {
   const proposalsBadge = document.getElementById('proposals-badge');
   const tabServices = document.getElementById('tab-services');
   const tabRequests = document.getElementById('tab-requests');
+  // Bloco de notificações (Home)
+  const notificationsAlert = document.getElementById('notifications-alert');
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const searchHistory = document.getElementById('search-history');
@@ -628,6 +630,8 @@ function initAuthScreen() {
       const isHidden = homeSearchSection?.classList.contains('hidden');
       if (servicesActive && !isHidden) searchInput?.focus();
     }, 0);
+    // Atualiza visibilidade do alerta de notificações ao entrar na Home
+    try { updateNotificationsAlertVisibility(); } catch(_) {}
     // Atualiza badge (se propostas mock existem)
     try { updateProposalsBadge(); } catch(_) {}
   }
@@ -1123,6 +1127,89 @@ function initAuthScreen() {
     proposalServiceFilter.innerHTML = '<option value="all">Todos os serviços</option>' + unique.map(id => `<option value="${id}">Serviço ${id}</option>`).join('');
     if ([...proposalServiceFilter.options].some(o => o.value === current)) proposalServiceFilter.value = current;
   }
+
+  /* =============================
+     NOTIFICAÇÕES (mock + lógica)
+     ============================= */
+  const notificacoesUsuario = {
+    novasPropostas: true,
+    novasMensagens: true,
+    pagamentoPendente: false,
+  };
+
+  function shouldShowNotifications(state){
+    if (!state) return false;
+    return Boolean(state.novasPropostas || state.novasMensagens || state.pagamentoPendente);
+  }
+
+  function mostrarAlertaNotificacao(temNotificacoes){
+    if (!notificationsAlert) return;
+    if (temNotificacoes){
+      notificationsAlert.style.display = '';
+      notificationsAlert.classList.remove('hidden');
+      notificationsAlert.setAttribute('aria-hidden','false');
+    } else {
+      notificationsAlert.style.display = 'none';
+      notificationsAlert.classList.add('hidden');
+      notificationsAlert.setAttribute('aria-hidden','true');
+    }
+  }
+
+  function updateNotificationsAlertVisibility(){
+    const show = shouldShowNotifications(notificacoesUsuario);
+    mostrarAlertaNotificacao(show);
+    // também controlar itens individuais
+    const itemPropostas = document.getElementById('alert-item-propostas');
+    const itemMsg = document.getElementById('alert-item-mensagem');
+    const itemPay = document.getElementById('alert-item-pagamento');
+    itemPropostas && (itemPropostas.style.display = notificacoesUsuario.novasPropostas ? '' : 'none');
+    itemMsg && (itemMsg.style.display = notificacoesUsuario.novasMensagens ? '' : 'none');
+    itemPay && (itemPay.style.display = notificacoesUsuario.pagamentoPendente ? '' : 'none');
+  }
+
+  // Ações dos alertas: clique em toda a linha de notificação (data-action no .alert-item)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest?.('[data-action]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-action');
+    if (action === 'open-requests') {
+      // Ativa aba de Propostas
+      showHome();
+      activateTab('requests');
+      setActiveNav(tabRequestsBtn);
+    } else if (action === 'open-chats') {
+      openChatsList();
+      setActiveNav(chatTabBtn);
+    } else if (action === 'open-payments') {
+      // Reutiliza a view de Em Andamento para simular a área de pagamentos
+      openProgressView();
+      setActiveNav(progressTabBtn);
+      // Realce visual simples (mensagem)
+      transientMsg('Abrindo área de pagamentos (simulação)');
+    }
+  });
+
+  // Acessibilidade: ativa pelo teclado (Enter/Espaço) em itens com role button
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const target = e.target.closest?.('[data-action]');
+    if (!target) return;
+    e.preventDefault();
+    const action = target.getAttribute('data-action');
+    if (action === 'open-requests') {
+      showHome();
+      activateTab('requests');
+      setActiveNav(tabRequestsBtn);
+    } else if (action === 'open-chats') {
+      openChatsList();
+      setActiveNav(chatTabBtn);
+    } else if (action === 'open-payments') {
+      openProgressView();
+      setActiveNav(progressTabBtn);
+      transientMsg('Abrindo área de pagamentos (simulação)');
+    }
+  });
+
 
   function formatPriceBRL(value) {
     try { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); } catch { return 'R$ ' + value.toFixed(2); }
