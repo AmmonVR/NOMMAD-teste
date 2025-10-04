@@ -17,6 +17,10 @@
   --color-accent-blue: #00bcf0;   /* cor de ação/destaque (2) */
   --color-danger: #FF4D4F;        /* mensagens de erro/alerta */
   --color-divider: #2A2A2A;       /* linhas/separadores sutis */
+  /* Cor primária NOMMAD (referenciada como $cor-primaria) */
+  --color-brand-primary: #00bcf0;
+  --color-success: #2ecc71;
+  --color-warning: #f1c40f;
 
   /* Espaçamentos e raios de borda (valores em px) */
   --space-2: 8px;
@@ -236,7 +240,8 @@ body {
 .btn-chat:active { transform: translateY(1px); }
 
 /* Seção de propostas aceitas (reutiliza estilos da lista principal) */
-.accepted-proposals { margin: 0 0 28px; }
+.accepted-proposals { margin: 0 0 10px; }
+.accepted-proposals .proposals-list { padding-bottom: 8px; }
 .accepted-proposals .section-title { color: var(--color-text-dim); }
 
 /* Estados visuais */
@@ -691,7 +696,7 @@ input[type="checkbox"] {
   max-width: min(1120px, 100%); /* amplia mas respeita telas menores */
   margin: 0 auto;
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-4); /* gap menor para aproximar sessões */
   /* Espaço inferior maior por causa da navbar fixa */
   padding: 0 var(--space-4) 90px;
 }
@@ -771,6 +776,13 @@ input[type="checkbox"] {
 }
 
 .search-section { display: grid; gap: var(--space-3); }
+.home .search-section { gap: var(--space-2); margin-top: -6px; }
+/* Evita espaço vazio quando não há histórico de busca */
+.home #search-history { min-height: 0; margin-top: -8px; gap: 2px; padding-top: 0; }
+/* Aproxima os botões de histórico da barra de pesquisa (gap 0 no container) */
+.home #home-search-section { gap: 0; }
+/* Ajusta leve espaço sob o título da seção de sugestões */
+.home #tab-services .section-title { margin: 0 0 6px 0; }
 
 .search-form { position: relative; }
 
@@ -793,7 +805,7 @@ input[type="checkbox"] {
   background: #151515;
   border: 1px solid var(--color-divider);
   color: var(--color-text);
-  padding: 14px 14px 14px 44px; /* padding-left maior para o ícone */
+  padding: 10px 12px 8px 44px; /* padding-bottom menor para aproximar histórico */
   border-radius: var(--radius-16);
   font-size: 16px;
 }
@@ -804,6 +816,9 @@ input[type="checkbox"] {
   gap: 8px;
   min-height: 20px;
 }
+/* Regra específica para o Home: história mais colada no input */
+.home #home-search-section .search-history,
+.home .search-history { gap: 2px; padding-top: 0; margin-top: -8px; min-height: 0; }
 
 /* ==== Resultados de busca de profissionais ==== */
 .search-results { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
@@ -1255,4 +1270,85 @@ input[type="checkbox"] {
     height: 20px;
 }
 .hidden { display: none; }
+
+/* ============================= */
+/*   EM ANDAMENTO (Progress)     */
+/* ============================= */
+.progress-view {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  z-index: 860; /* acima da home/results */
+  overflow-y: auto;
+  padding: 12px 16px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.progress-header { display: grid; gap: 4px; padding: 2px 2px 6px; position: sticky; top: 0; background: linear-gradient(180deg,#121212,#121212F0); z-index: 1; }
+.progress-title { margin: 0; font-size: 20px; font-weight: 800; }
+.progress-subtitle { margin: 0; font-size: 13px; color: var(--color-text-dim); }
+.progress-list { display: grid; gap: 12px; }
+.progress-section { display: grid; gap: 8px; margin-top: 6px; }
+.progress-section-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--color-text-dim); text-transform: uppercase; letter-spacing: .8px; }
+
+/* Card de acompanhamento (3 colunas) */
+.progress-card {
+  background: #181818;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 5px solid var(--color-brand-primary); /* borda lateral com a cor primária */
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.35);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 0.9fr; /* três colunas */
+  gap: 14px;
+  align-items: start;
+}
+.progress-col { display: grid; gap: 8px; min-width: 0; }
+.progress-title-sm { margin: 0; font-size: 15px; font-weight: 700; }
+.progress-provider { margin: 0; font-size: 13px; color: var(--color-text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.progress-chat-btn { width: auto; justify-self: start; padding: 8px 12px; font-size: 12px; border-radius: 10px; background: #222; border: 1px solid #2f2f2f; color: #eaeaea; cursor: pointer; }
+.progress-chat-btn:hover { background: #272727; }
+.progress-chat-btn .icon { margin-right: 6px; }
+
+/* Status + prazo */
+.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: .4px; padding: 6px 10px; border-radius: 999px; border: 1px solid transparent; text-transform: uppercase; }
+.status-ok { background: rgba(46,204,113,0.12); color: var(--color-success); border-color: rgba(46,204,113,0.35); }
+.status-pending { background: rgba(241,196,15,0.12); color: #f6d84e; border-color: rgba(241,196,15,0.35); }
+.status-late { background: rgba(255,77,79,0.12); color: var(--color-danger); border-color: rgba(255,77,79,0.35); }
+.progress-deadline { margin: 0; font-size: 13px; color: var(--color-text-dim); }
+.countdown { font-size: 13px; font-weight: 700; }
+.countdown.late { color: var(--color-danger); }
+
+/* Ações e valor */
+.progress-price { font-size: 18px; font-weight: 800; color: var(--color-accent-orange); }
+.progress-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-secondary { background: #242424; color: #e0e0e0; border: 1px solid #333; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.btn-secondary:hover { background: #2a2a2a; }
+.btn-primary-ghost { background: linear-gradient(90deg,#00bcf0,#ffe556); color: #111; border: none; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(0,188,240,0.25); }
+.btn-primary-ghost:hover { filter: brightness(1.06); }
+
+/* Bordas por status, sobrescrevem a cor primária quando apropriado */
+.progress-card.status-ok { border-left-color: var(--color-success); }
+.progress-card.status-pending { border-left-color: var(--color-warning); }
+.progress-card.status-late { border-left-color: var(--color-danger); }
+
+@media (max-width: 640px) {
+  .progress-card { grid-template-columns: 1fr; }
+  .progress-actions { justify-content: flex-start; }
+}
+
+/* Animações similares às de propostas (saida/entrada) */
+@keyframes progressMoveOut {
+  0% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(.92) translateY(-4px); }
+}
+@keyframes progressPopIn {
+  0% { opacity: 0; transform: scale(.9) translateY(10px); }
+  60% { opacity: 1; transform: scale(1.04) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.progress-card.anim-leave { animation: progressMoveOut .28s ease forwards; pointer-events: none; }
+.progress-card.anim-enter { animation: progressPopIn .42s cubic-bezier(.16,.8,.3,1) forwards; }
 
