@@ -1414,6 +1414,11 @@ function initAuthScreen() {
     console.log('Taxa serviço:', fee.toFixed(2), 'Total cliente:', total.toFixed(2));
     ensureChatForProfessional(p.professionalId, p.professionalName, p.avatar);
     alert('Proposta aceita! Chat liberado.');
+    // Atualiza notificações de propostas
+    if (proposals.filter(x => x.status === 'pending').length === 0) {
+      notificacoesUsuario.novasPropostas = false;
+      updateNotificationsAlertVisibility();
+    }
     // Aguarda animação de saída antes de re-render
     setTimeout(() => {
       renderProposalsView(); // irá mover a proposta para seção de aceitas
@@ -1428,6 +1433,11 @@ function initAuthScreen() {
     const p = proposals.find(x => x.id === proposalId);
     if (!p || p.status !== 'pending') return;
     p.status = 'rejected';
+    // Atualiza notificações de propostas
+    if (proposals.filter(x => x.status === 'pending').length === 0) {
+      notificacoesUsuario.novasPropostas = false;
+      updateNotificationsAlertVisibility();
+    }
     renderProposalsView();
     updateProposalsBadge();
   }
@@ -1573,16 +1583,18 @@ function initAuthScreen() {
 
   function openChatsList() {
     // show chats list (hide other screens)
-    setHidden(chatsList, false);
-    setHidden(conversationView, true);
-    // ensure bottom nav stays visible
-    setHidden(bottomNav, false);
-    // lock page scroll behind overlay
-    document.body.style.overflow = 'hidden';
-    // focus first interactive element inside chats
-    setTimeout(() => chatsContainer?.querySelector('.chat-item')?.focus(), 120);
-    // Ao abrir a lista de chats consideramos notificações visualizadas
-    clearChatUnread();
+  setHidden(chatsList, false);
+  setHidden(conversationView, true);
+  // ensure bottom nav stays visible
+  setHidden(bottomNav, false);
+  // lock page scroll behind overlay
+  document.body.style.overflow = 'hidden';
+  // focus first interactive element inside chats
+  setTimeout(() => chatsContainer?.querySelector('.chat-item')?.focus(), 120);
+  // Ao abrir a lista de chats consideramos notificações visualizadas
+  clearChatUnread();
+  notificacoesUsuario.novasMensagens = false;
+  updateNotificationsAlertVisibility();
   }
 
   function closeChats() {
@@ -1622,7 +1634,11 @@ function addConversationMessage(text, received = false) {
     conversationMessages.prepend(el); 
     // scroll to bottom
     setTimeout(() => { conversationMessages.scrollTop = conversationMessages.scrollHeight; }, 20);
-    if (received && !isChatInterfaceOpen()) markChatUnread();
+    if (received && !isChatInterfaceOpen()) {
+      markChatUnread();
+      notificacoesUsuario.novasMensagens = true;
+      updateNotificationsAlertVisibility();
+    }
 }
 
   function isChatInterfaceOpen() {
@@ -1770,6 +1786,8 @@ function addConversationMessage(text, received = false) {
   simulateBtn?.addEventListener('click', () => {
     // Simula chegada de mensagem recebida (não lida se chat fechado)
     addConversationMessage('Mensagem simulada às ' + new Date().toLocaleTimeString(), true);
+    notificacoesUsuario.novasMensagens = true;
+    updateNotificationsAlertVisibility();
     transientMsg('Mensagem simulada');
   });
 
@@ -1905,4 +1923,3 @@ if (document.readyState === 'loading') {
 } else {
   initAuthScreen();
 }
-
