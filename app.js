@@ -56,6 +56,7 @@ function initAuthScreen() {
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const searchHistory = document.getElementById('search-history');
+  const homeSearchSection = document.getElementById('home-search-section');
   // Propostas (listas e filtros)
   const proposalsListEl = document.getElementById('proposals-list');
   const proposalsEmptyEl = document.getElementById('proposals-empty');
@@ -106,6 +107,12 @@ function initAuthScreen() {
   const profileBackBtn = document.getElementById('profile-back');   // Botão de voltar
   const profileEditBtn = document.getElementById('edit-profile-btn');
   const profileLogoutBtn = document.getElementById('profile-logout');
+  // EM ANDAMENTO
+  const progressTabBtn = document.getElementById('progress-tab-btn');
+  const progressView = document.getElementById('progress-view');
+  const progressList = document.getElementById('progress-list');
+  const progressCompletedList = document.getElementById('progress-completed-list');
+  const progressSubtitle = document.getElementById('progress-subtitle');
   // info-name removido da lista (nome já aparece em destaque no topo)
   const infoNameEl = null;
   const infoPhoneEl = document.getElementById('info-phone');
@@ -600,6 +607,13 @@ function initAuthScreen() {
   function showHome() {
     // Oculta auth e exibe Home + navbar
     setHidden(authSection, true);
+    // Garante que outras telas secundárias fiquem ocultas
+    setHidden(progressView, true);
+    setHidden(resultsView, true);
+    setHidden(chatsList, true);
+    setHidden(conversationView, true);
+    setHidden(profileView, true);
+    // Exibe Home
     setHidden(homeView, false);
     setHidden(bottomNav, false);
     // mark Home tab active in bottom nav
@@ -608,8 +622,12 @@ function initAuthScreen() {
     setHidden(headerLogo, true);
     setHidden(headerTitle, false);
     if (headerTitle) headerTitle.textContent = 'Início';
-    // foca na busca para UX rápida
-    setTimeout(() => searchInput?.focus(), 0);
+    // foca na busca apenas quando a aba Serviços está ativa e a barra está visível
+    setTimeout(() => {
+      const servicesActive = tabServicesBtn?.classList.contains('active');
+      const isHidden = homeSearchSection?.classList.contains('hidden');
+      if (servicesActive && !isHidden) searchInput?.focus();
+    }, 0);
     // Atualiza badge (se propostas mock existem)
     try { updateProposalsBadge(); } catch(_) {}
   }
@@ -630,6 +648,7 @@ function initAuthScreen() {
       tabServices?.setAttribute('aria-hidden', 'false');
       tabRequests?.classList.add('hidden');
       tabRequests?.setAttribute('aria-hidden', 'true');
+      if (homeSearchSection) { homeSearchSection.classList.remove('hidden'); homeSearchSection.setAttribute('aria-hidden','false'); }
     } else {
       tabServicesBtn?.classList.remove('active');
       tabRequestsBtn?.classList.add('active');
@@ -639,6 +658,7 @@ function initAuthScreen() {
       tabRequests?.setAttribute('aria-hidden', 'false');
       // Ao abrir a aba de propostas, renderiza lista
       renderProposalsView();
+      if (homeSearchSection) { homeSearchSection.classList.add('hidden'); homeSearchSection.setAttribute('aria-hidden','true'); }
     }
   }
 
@@ -1541,6 +1561,9 @@ function addConversationMessage(text, received = false) {
     // hide any chat overlays when returning home
     setHidden(chatsList, true);
     setHidden(conversationView, true);
+    // Além do chat, garanta que a tela Em Andamento e Results sejam ocultas
+    setHidden(progressView, true);
+    setHidden(resultsView, true);
     document.body.style.overflow = '';
   });
 
@@ -1661,6 +1684,131 @@ function addConversationMessage(text, received = false) {
     // Simula chegada de mensagem recebida (não lida se chat fechado)
     addConversationMessage('Mensagem simulada às ' + new Date().toLocaleTimeString(), true);
     transientMsg('Mensagem simulada');
+  });
+
+  /* =============================
+     EM ANDAMENTO — dados e UI
+     ============================= */
+  // Mock de projetos em andamento para demonstração do layout.
+  // Campos: id, servico, profissional, valorTotal, status, dataEntregaISO
+  let activeProjects = [
+    { id: 'A1', servico: 'Pintura de Quarto', profissional: 'João Lima', valorTotal: 385.00, status: 'Em Andamento', dataEntregaISO: addDaysISO(new Date(), 2) },
+    { id: 'A2', servico: 'Montagem de Móveis', profissional: 'Marina Souza', valorTotal: 201.60, status: 'Pendente', dataEntregaISO: addDaysISO(new Date(), -1) },
+  ];
+
+  // Util: somar dias e retornar ISO simples (yyyy-mm-dd)
+  function addDaysISO(date, days){ const d = new Date(date); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+  function formatBRDate(iso){ try { const [y,m,da] = iso.split('-'); return `${da}/${m}/${y}`; } catch { return iso; } }
+  function formatBRL(n){ try { return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); } catch { return 'R$ '+Number(n).toFixed(2); } }
+
+  // Calcula dias restantes (inteiros) entre hoje e data alvo
+  function daysLeft(targetISO){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const target = new Date(targetISO+'T00:00:00');
+    const diffMs = target - today;
+    return Math.ceil(diffMs / (1000*60*60*24));
+  }
+
+  function statusClass(status, dLeft){
+    // Regras: Concluído -> ok; Em Andamento -> ok; Pendente -> pending; Atrasado -> late
+    if (status.toLowerCase() === 'concluído') return 'status-ok';
+    if (dLeft < 0) return 'status-late';
+    if (status.toLowerCase() === 'pendente') return 'status-pending';
+    return 'status-ok';
+  }
+
+  function buildProgressCardHTML(p){
+    const dLeft = daysLeft(p.dataEntregaISO);
+    const stClass = statusClass(p.status, dLeft);
+    const cardClass = stClass.replace('status-',''); // ok|pending|late
+    const isDone = p.status && p.status.toLowerCase() === 'concluído';
+    const deadlineTxt = `Entrega estimada: ${formatBRDate(p.dataEntregaISO)}`;
+    const cdTxt = dLeft < 0 ? `Atrasado em ${Math.abs(dLeft)} dia${Math.abs(dLeft)===1?'':'s'}` : `${dLeft} dia${dLeft===1?'':'s'} restantes`;
+    const cdClass = dLeft < 0 ? 'countdown late' : 'countdown';
+    const statusLabel = isDone ? 'Concluído' : (dLeft < 0 ? 'Atrasado' : p.status);
+    return `
+      <article class="progress-card ${stClass} status-${cardClass}" data-project-id="${p.id}">
+        <div class="progress-col">
+          <h3 class="progress-title-sm">${p.servico}</h3>
+          <p class="progress-provider">${p.profissional}</p>
+          <button type="button" class="progress-chat-btn" data-action="chat" aria-label="Falar com ${p.profissional}">
+            <span class="icon">💬</span> Falar com ${p.profissional}
+          </button>
+        </div>
+        <div class="progress-col">
+          <span class="status-badge ${stClass}">${statusLabel}</span>
+          ${isDone ? '' : `<p class=\"progress-deadline\">${deadlineTxt}</p>`}
+          ${isDone ? '' : `<div class=\"${cdClass}\">${cdTxt}</div>`}
+        </div>
+        <div class="progress-col">
+          <div class="progress-price">${formatBRL(p.valorTotal)}</div>
+          <div class="progress-actions">
+            <button type="button" class="btn-primary-ghost" data-action="ver-proposta">Ver Proposta Completa</button>
+            ${statusLabel.toLowerCase() !== 'concluído' ? '<button type="button" class="btn-secondary" data-action="marcar-concluido">Marcar como Concluído</button>' : ''}
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function renderProgressLists(){
+    if (progressList) {
+      const actives = activeProjects.filter(p => p.status.toLowerCase() !== 'concluído');
+      progressList.innerHTML = actives.map(buildProgressCardHTML).join('');
+    }
+    if (progressCompletedList) {
+      const dones = activeProjects.filter(p => p.status.toLowerCase() === 'concluído');
+      progressCompletedList.innerHTML = dones.map(buildProgressCardHTML).join('');
+    }
+    if (progressSubtitle){
+      const count = activeProjects.filter(p => p.status.toLowerCase() !== 'concluído').length;
+      progressSubtitle.textContent = `${count} projeto${count===1?'':'s'} ativos`;
+    }
+  }
+
+  function openProgressView(){
+    // Esconde outras telas principais
+    setHidden(authSection, true);
+    setHidden(homeView, true);
+    setHidden(resultsView, true);
+    setHidden(chatsList, true);
+    setHidden(conversationView, true);
+    setHidden(profileView, true);
+    // Mostra progress
+    setHidden(progressView, false);
+    setHidden(bottomNav, false);
+    if (headerTitle) { setHidden(headerLogo, true); setHidden(headerTitle, false); headerTitle.textContent = 'Em Andamento'; }
+    renderProgressLists();
+  }
+
+  progressTabBtn?.addEventListener('click', (e)=>{ e.preventDefault(); openProgressView(); setActiveNav(progressTabBtn); });
+
+  // Delegação de ações dos cards
+  progressList?.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if (!btn) return;
+    const card = btn.closest('.progress-card'); if (!card) return;
+    const id = card.getAttribute('data-project-id');
+    const action = btn.getAttribute('data-action');
+    const proj = activeProjects.find(p=>p.id===id);
+    if (!proj) return;
+    if (action === 'chat') {
+      // Abre chat com o profissional
+      ensureChatForProfessional('prof-'+proj.id, proj.profissional, '');
+      openChatsList();
+      setActiveNav(chatTabBtn);
+    } else if (action === 'ver-proposta') {
+      alert('Abrir proposta completa do serviço: ' + proj.servico + ' (futuro).');
+    } else if (action === 'marcar-concluido') {
+      // Animação de saída no card atual
+      card.classList.add('anim-leave');
+      // Após a animação, muda o status e re-renderiza com animação de entrada no concluído
+      setTimeout(() => {
+        proj.status = 'Concluído';
+        renderProgressLists();
+        // adiciona animação de entrada no último item da lista de concluídos
+        const lastDone = progressCompletedList?.querySelector('.progress-card:last-child');
+        if (lastDone) lastDone.classList.add('anim-enter');
+      }, 260);
+    }
   });
 }
 
